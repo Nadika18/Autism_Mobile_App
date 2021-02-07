@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "882598089647",
+    "project_id": "autism-40d05",
+    "storage_bucket": "autism-40d05.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:882598089647:android:8950dde9b47e3daa66955a",
+        "android_client_info": {
+          "package_name": "com.example.easytalk"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "882598089647-e47tc2ur0fninpn0t410bmclba1irslr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyADawTWsQNHJR_RGg48LXM0nqf6gAUIs1M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "882598089647-e47tc2ur0fninpn0t410bmclba1irslr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

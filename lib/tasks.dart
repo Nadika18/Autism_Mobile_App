@@ -1,7 +1,7 @@
-  List<String> todoName = [];
-  List<String> todoDesp = [];
-  List<DateTime> dateTime = [];
-  List<bool> completed = [];
+  List<String> todoName = ["krishbin"];
+  List<String> todoDesp = ["fjkdj"];
+  List<DateTime> dateTime = [DateTime.parse("2020-12-01")];
+  List<bool> completed = [false];
 
   void addTodo(String taskname,String taskdesp,DateTime dtime,bool comp){
     todoName.add(taskname);

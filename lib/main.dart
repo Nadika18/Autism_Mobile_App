@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'forms.dart';
+import 'tasks.dart';
 
 void main() {
   runApp(MyApp());
@@ -12,9 +14,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
         debugShowCheckedModeBanner: false,
-        title: 'Flutter Demo',
+        title: 'TODO app',
         theme: ThemeData(
-            primarySwatch: Colors.blue,
+            primarySwatch: Colors.purple,
             visualDensity: VisualDensity.adaptivePlatformDensity,
         ),
         home: MyHomePage(title: 'Easytalk Autism'),
@@ -56,14 +58,8 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-            title: Text(widget.title),
-        ),
-        body: 
-        FutureBuilder(
+  Widget getDataFromFirebase(){
+    return FutureBuilder(
             future: getData(),
             builder: (context,AsyncSnapshot<QuerySnapshot>
                 snapshot){
@@ -86,7 +82,58 @@ class _MyHomePageState extends State<MyHomePage> {
                   child: CircularProgressIndicator()
                   );
             },  
-    ),
+    );
+  }
+
+
+
+  Widget _buildTodoListItem(int index){
+    return ListTile(
+          leading: Text((index+1).toString()),
+          title: Text(todoName[index]),
+          subtitle: Text(todoDesp[index]),
+          trailing: FlatButton(
+                child: Icon(Icons.delete),
+                onPressed: (){
+                  setState(() {                          
+                    removeTodo(index);
+                  });
+                },
+              )
+        );
+  }
+
+  Widget _buildTodoList(){
+    return ListView.builder(
+          itemCount: todoName.length,
+          itemExtent: 100,
+          itemBuilder: (context, index){
+            return _buildTodoListItem(index);
+          },
+        );
+  }
+
+  //change the state of main screen after returning back from a routed screen
+  Future returnBack(dynamic value){
+    setState(() {            
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(
+            title: Text(widget.title),
+        ),
+        body: _buildTodoList(),
+        floatingActionButton: FloatingActionButton(
+              child: Icon(Icons.add),
+              onPressed: (){
+                Navigator.push(context, MaterialPageRoute(
+                          builder: (context) => BaseForm()
+                        )).then(returnBack);
+              },
+            ),
     );
   }
 

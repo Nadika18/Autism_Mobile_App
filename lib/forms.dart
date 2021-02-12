@@ -48,6 +48,7 @@ class _BaseFormState extends State<BaseForm>{
       });
       _scaffoldKey.currentState.showSnackBar(
           snackbar("Date Selected",Duration(milliseconds:1000)));
+      FocusScope.of(_scaffoldKey.currentContext).nextFocus();
     }else{
       _scaffoldKey.currentState.showSnackBar(
           snackbar("Cancelled",Duration(milliseconds:500)));
@@ -65,6 +66,7 @@ class _BaseFormState extends State<BaseForm>{
       });
       _scaffoldKey.currentState.showSnackBar(
           snackbar("Date Selected",Duration(milliseconds:1000)));
+      FocusScope.of(_scaffoldKey.currentContext).nextFocus();
     }else{
       _scaffoldKey.currentState.showSnackBar(
           snackbar("Cancelled",Duration(milliseconds:500)));
@@ -77,6 +79,8 @@ class _BaseFormState extends State<BaseForm>{
                 children: [
                   Text("Task name."),
                   TextFormField(
+                      textInputAction: TextInputAction.next,
+                      autofocus: true,
                       validator: (value){
                         if(value.isEmpty){
                           return "enter a task name";
@@ -198,6 +202,7 @@ class _BaseFormState extends State<BaseForm>{
     return Form(
           key: _formKey,
           child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   _buildInputName(),
                   _buildInputDespcription(),
@@ -214,10 +219,11 @@ class _BaseFormState extends State<BaseForm>{
   Widget build(BuildContext context){
     return Scaffold(
         key: _scaffoldKey,
+        resizeToAvoidBottomInset: false,
         appBar: AppBar(
               title: Text(title),
             ),
-        body: _buildForm()
+        body: _buildForm() 
         );
   }
 }

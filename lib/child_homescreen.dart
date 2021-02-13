@@ -12,7 +12,7 @@ class ChildHomePage extends StatefulWidget {
 
 class _ChildHomePageState extends State<ChildHomePage> {
   String name,gender;
-  int age,tasks;
+  int age,tasks,remainingTasks;
 
   @override
   void initState(){
@@ -21,6 +21,7 @@ class _ChildHomePageState extends State<ChildHomePage> {
     age = 19;
     gender = "Female";
     tasks = 18;
+    remainingTasks = todoName.length;
   }
 
   Widget taskMaker(String taskName, String
@@ -58,6 +59,7 @@ class _ChildHomePageState extends State<ChildHomePage> {
             onPressed: (){
               setState(() {                          
                 removeTodo(index);
+                remainingTasks = todoName.length;
               });
             },
         )
@@ -68,10 +70,203 @@ class _ChildHomePageState extends State<ChildHomePage> {
     return ListView.builder(
         itemCount: todoName.length,
         itemBuilder: (context, index){
-          return
-              taskMaker(taskName[index],taskDescription[index],dateTime[index]);
+          return _buildTodoListItem(index);
         },
     );
+  }
+
+  Widget _hearTodaysStatus(){
+    return InkWell(
+        child: Container(
+            padding: const EdgeInsets.all(8.0),
+            decoration: BoxDecoration(
+                borderRadius: 
+                BorderRadius.all(Radius.circular(5)),
+                color: Colors.blue[400],
+                boxShadow: [
+                  BoxShadow(
+                      color: Colors.grey.withOpacity(0.3),
+                      spreadRadius: 5,
+                      blurRadius: 7,
+                      offset: Offset(0, 3),
+                  ),
+                ],
+            ),
+            alignment: Alignment.center,
+            child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children:[
+                  Icon(Icons.campaign,size:40),
+                  SizedBox(
+                      width: 20,
+                  ),
+                  Text("Hear todays status",
+                      style: Theme.of(context)
+                      .textTheme
+                      .headline6
+                      .copyWith(color: Colors.white))
+
+                ]
+            ), 
+            ),
+            onTap: (){
+              print("tapped");
+              //works okay
+            },
+            );
+  }
+
+  Widget _remainingTasks(){
+    return InkWell(
+        child: Container(
+            padding: const EdgeInsets.all(8.0),
+            decoration: BoxDecoration(
+                borderRadius: 
+                BorderRadius.all(Radius.circular(5)),
+                color: Colors.orange[500],
+                boxShadow: [
+                  BoxShadow(
+                      color: Colors.grey.withOpacity(0.3),
+                      spreadRadius: 5,
+                      blurRadius: 7,
+                      offset: Offset(0, 3),
+                  ),
+                ],
+            ),
+            alignment: Alignment.center,
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children:[
+                  Text(remainingTasks.toString(),
+                      style: TextStyle(
+                          fontSize: 30,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                      )
+                  ),
+                  SizedBox(
+                      width: 20,
+                  ),
+                  Text("remaining tasks",
+                      style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                      )
+                  ),
+                ]
+                    ), 
+                ),
+                onTap: (){
+                  print("tapped");
+                  //works okay
+                },
+                );
+  }
+
+  Widget _currentTask(){
+    return Container(
+        decoration: BoxDecoration(
+            borderRadius: 
+            BorderRadius.all(Radius.circular(5)),
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(
+                  color: Colors.grey.withOpacity(0.3),
+                  spreadRadius: 5,
+                  blurRadius: 7,
+                  offset: Offset(0, 3),
+              ),
+            ],),
+        child: Stack(
+            children: [
+              Container(
+                  height: MediaQuery.of(context).size.height*2 / 6.5,
+                  child: Stack(
+                      children: [
+                        Positioned(
+                            top:0,
+                            width: MediaQuery.of(context).size.width * 0.55 - 3,
+                            child:ClipRRect(
+                                borderRadius:
+                                BorderRadius.only(topLeft:Radius.circular(5)),
+                                child: Image(
+                                    image: AssetImage('assets/bed.jpg')
+                                ))),
+                        Positioned(
+                            right:0,
+                            width: MediaQuery.of(context).size.width * 0.45 - 3,
+                            height: MediaQuery.of(context).size.height*1.8 / 6.5,
+                            child:Column(
+                                mainAxisAlignment:
+                                MainAxisAlignment.center,
+                                crossAxisAlignment:
+                                CrossAxisAlignment.center,
+                                children: [
+                                  Text("Make your Bed",
+                                      style:
+                                      TextStyle(
+                                          fontSize: 16,
+                                          fontWeight:FontWeight.bold
+                                          ),
+                                      textAlign: TextAlign.center,
+                                  ),
+                                  Container(
+                                      padding: const EdgeInsets.all(15),
+                                      child:Text("make it comfy to tuck yourself"
+                                          " in",
+                                          textAlign: TextAlign.center,
+                                      )
+                                  ),
+                                ],
+                            )),
+                            ],
+                            )),
+
+                            Positioned(
+                                bottom:0,
+                                width: MediaQuery.of(context).size.width -6,
+                                child:Container(
+                                    decoration: BoxDecoration(
+                                        borderRadius: 
+                                        BorderRadius.only(bottomLeft:Radius.circular(5),bottomRight:Radius.circular(5)),
+                                        color: Colors.white,
+                                        boxShadow: [
+                                          BoxShadow(
+                                              color: Colors.grey.withOpacity(0.3),
+                                              spreadRadius: 7,
+                                              blurRadius: 7,
+                                              offset: Offset(0, -3),
+                                          ),
+                                        ],),
+                                    padding: const EdgeInsets.fromLTRB(0,3,0,5),
+                                    child:
+                                    Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                        children: [
+                                          Icon(Icons.adb,size:30),
+                                          Icon(Icons.add),
+                                          Icon(Icons.check_box_rounded),
+                                        ],
+                                    ))),
+                                    ]),
+                                    );
+  }
+
+  Widget _feelings (){
+    return Container(
+          child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  IconButton(
+                      icon: Icon(Icons.mood,size:50),
+                      onPressed: (){
+                      }
+                      ),
+                  Text("How are you feeling",style: TextStyle(fontSize:20))
+                ],
+              ),
+        );
   }
 
   Widget _createTopView(){
@@ -84,7 +279,7 @@ class _ChildHomePageState extends State<ChildHomePage> {
             ),
             boxShadow: [
               BoxShadow(
-                  color: Colors.grey.withOpacity(0.5),
+                  color: Colors.grey.withOpacity(0.6),
                   spreadRadius: 5,
                   blurRadius: 7,
                   offset: Offset(0, 3),
@@ -121,24 +316,42 @@ class _ChildHomePageState extends State<ChildHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: SafeArea(
-            child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children:[
-                  ConstrainedBox(
-                      constraints: BoxConstraints(
-                          minWidth: MediaQuery.of(context).size.width,
-                          minHeight: 60,
-                          maxHeight: 80,
-                      ),
-                      child:Expanded(
+            child: Stack(
+                children: [Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children:[
+                      ConstrainedBox(
+                          constraints: BoxConstraints(
+                              minWidth: MediaQuery.of(context).size.width,
+                              minHeight: 70,
+                              maxHeight: 70,
+                          ),
                           child: _createTopView(),
                       ),
-                  ),
-                  Expanded(
-                      child:_buildTodoList()
-                  ),
-                ])
-        ),
-    );
+                      Container(
+                          padding: const EdgeInsets.fromLTRB(3,4,3,0),
+                          height: (MediaQuery.of(context).size.height-70)/6.5,
+                          child: _hearTodaysStatus(),
+                      ),
+                      Container(
+                          padding: const EdgeInsets.fromLTRB(3,4,3,0),
+                          height: (MediaQuery.of(context).size.height-70)/6.5,
+                          child: _remainingTasks(),
+                      ),
+                      Container(
+                          padding: const EdgeInsets.fromLTRB(3,4,3,0),
+                          height: (MediaQuery.of(context).size.height-70)*2.5/6.5,
+                          child: _currentTask(),
+                      ),
+                      Container(
+                          padding: const EdgeInsets.fromLTRB(3,13,3,0),
+                          child: _feelings(),
+                          ),
+                      Expanded(
+                          child:_buildTodoList(),
+                      ),
+                      ])
+                          ]),
+                          ));
   }
 }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'utils.dart';
+import 'forms.dart';
 import 'tasks.dart';
-
 
 class ChildHomePage extends StatefulWidget {
   ChildHomePage({Key key, this.title}) : super(key: key);
@@ -164,7 +164,7 @@ class _ChildHomePageState extends State<ChildHomePage> {
                 );
   }
 
-  Widget _currentTask(){
+  Widget _currentTask(Size size){
     return Container(
         decoration: BoxDecoration(
             borderRadius: 
@@ -181,12 +181,12 @@ class _ChildHomePageState extends State<ChildHomePage> {
         child: Stack(
             children: [
               Container(
-                  height: MediaQuery.of(context).size.height*2 / 6.5,
+                  height: size.height*2 / 6.5,
                   child: Stack(
                       children: [
                         Positioned(
                             top:0,
-                            width: MediaQuery.of(context).size.width * 0.55 - 3,
+                            width: size.width * 0.55 - 3,
                             child:ClipRRect(
                                 borderRadius:
                                 BorderRadius.only(topLeft:Radius.circular(5)),
@@ -195,15 +195,15 @@ class _ChildHomePageState extends State<ChildHomePage> {
                                 ))),
                         Positioned(
                             right:0,
-                            width: MediaQuery.of(context).size.width * 0.45 - 3,
-                            height: MediaQuery.of(context).size.height*1.8 / 6.5,
+                            width: size.width * 0.45 - 3,
+                            height: size.height*1.8 / 6.5,
                             child:Column(
                                 mainAxisAlignment:
                                 MainAxisAlignment.center,
                                 crossAxisAlignment:
                                 CrossAxisAlignment.center,
                                 children: [
-                                  Text("Make your Bed",
+                                  Text(todoName[0],
                                       style:
                                       TextStyle(
                                           fontSize: 16,
@@ -213,8 +213,7 @@ class _ChildHomePageState extends State<ChildHomePage> {
                                   ),
                                   Container(
                                       padding: const EdgeInsets.all(15),
-                                      child:Text("make it comfy to tuck yourself"
-                                          " in",
+                                      child:Text(todoDesp[0],
                                           textAlign: TextAlign.center,
                                       )
                                   ),
@@ -225,7 +224,7 @@ class _ChildHomePageState extends State<ChildHomePage> {
 
                             Positioned(
                                 bottom:0,
-                                width: MediaQuery.of(context).size.width -6,
+                                width: size.width -6,
                                 child:Container(
                                     decoration: BoxDecoration(
                                         borderRadius: 
@@ -244,9 +243,26 @@ class _ChildHomePageState extends State<ChildHomePage> {
                                     Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                         children: [
-                                          Icon(Icons.adb,size:30),
-                                          Icon(Icons.add),
-                                          Icon(Icons.check_box_rounded),
+                                          IconButton(
+                                              icon:Icon(Icons.remove_circle_outline),
+                                              onPressed: (){
+                                                Navigator.push(context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                        BaseForm(),
+                                                        )).then((value)=>setState((){}));
+                                              },
+                                              ),
+                                          IconButton(
+                                              icon:Icon(Icons.volume_up),
+                                              onPressed: (){
+                                              },
+                                              ),
+                                          IconButton(
+                                              icon:Icon(Icons.done_sharp),
+                                              onPressed: (){
+                                              },
+                                              ),
                                         ],
                                     ))),
                                     ]),
@@ -312,9 +328,27 @@ class _ChildHomePageState extends State<ChildHomePage> {
             ));
   }
 
+  
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return Scaffold(
+        drawer:  Drawer(
+            child:ListView(
+          children: [
+            DrawerHeader(
+                padding: EdgeInsets.all(15),
+                decoration: BoxDecoration(
+                    color:Colors.blue[400],
+                    ),
+                  child: Text("Welcome User",
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 24,
+                      ),
+                )),
+          ],
+        )),
         body: SafeArea(
             child: Stack(
                 children: [Column(
@@ -322,7 +356,7 @@ class _ChildHomePageState extends State<ChildHomePage> {
                     children:[
                       ConstrainedBox(
                           constraints: BoxConstraints(
-                              minWidth: MediaQuery.of(context).size.width,
+                              minWidth: size.width,
                               minHeight: 70,
                               maxHeight: 70,
                           ),
@@ -330,18 +364,18 @@ class _ChildHomePageState extends State<ChildHomePage> {
                       ),
                       Container(
                           padding: const EdgeInsets.fromLTRB(3,4,3,0),
-                          height: (MediaQuery.of(context).size.height-70)/6.5,
+                          height: (size.height-70)/6.5,
                           child: _hearTodaysStatus(),
                       ),
                       Container(
                           padding: const EdgeInsets.fromLTRB(3,4,3,0),
-                          height: (MediaQuery.of(context).size.height-70)/6.5,
+                          height: (size.height-70)/6.5,
                           child: _remainingTasks(),
                       ),
                       Container(
                           padding: const EdgeInsets.fromLTRB(3,4,3,0),
-                          height: (MediaQuery.of(context).size.height-70)*2.5/6.5,
-                          child: _currentTask(),
+                          height: (size.height-70)*2.5/6.5,
+                          child: _currentTask(size),
                       ),
                       Container(
                           padding: const EdgeInsets.fromLTRB(3,13,3,0),

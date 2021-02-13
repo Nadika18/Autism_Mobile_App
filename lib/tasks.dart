@@ -1,5 +1,5 @@
-  List<String> todoName = ["krishbin"];
-  List<String> todoDesp = ["fjkdj"];
+  List<String> todoName = ["krishbin","Make your Nadika"];
+  List<String> todoDesp = ["fjkdj","Be sure to be tucked in tightly"];
   List<DateTime> dateTime = [DateTime.parse("2020-12-01")];
   List<bool> completed = [false];
 

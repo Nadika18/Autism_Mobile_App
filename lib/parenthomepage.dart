@@ -1,22 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'forms.dart';
 import 'utils.dart'; 
 
 class ParentHomePage extends StatefulWidget {
-  ParentHomePage({Key key}):super(key: key);
+  ParentHomePage({Key key}):super(key:key);
   @override
   _ParentHomePageState createState() => _ParentHomePageState();
 }
 
 class _ParentHomePageState extends State<ParentHomePage>{
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  final user = FirebaseAuth.instance.currentUser;
   String name,email,imagelink;
   @override
   void initState(){
     super.initState();
-    name = "Nadika Poudel";
-    email = "nadikapoudel16@gmail.com";
-    imagelink = "assets/nadika.jpg";
+    name = user.displayName;
+    email = user.email;
+    imagelink = user.photoURL;
   }
 
   Widget _buildTopView(Size size){
@@ -40,7 +42,7 @@ class _ParentHomePageState extends State<ParentHomePage>{
               ListTile(
                   leading: Container(
                       width:60,
-                      child:CircularImageContainer("assets/nadika.jpg",50)),
+                      child:CircularImageContainerLink(imagelink,50)),
                   title: Text(name),
                   subtitle: Text(email),
                   trailing: FlatButton(

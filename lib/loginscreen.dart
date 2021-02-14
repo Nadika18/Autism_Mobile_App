@@ -1,6 +1,11 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/foundation.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'parenthomepage.dart';
 
 class MainLoginScreen extends StatefulWidget{
   @override
@@ -14,6 +19,9 @@ class _MainLoginScreenState extends State<MainLoginScreen>{
       TextEditingController();
   //10^(no of digit - 1)
   final int factor = 100000;
+  //sign in with google
+
+
   Widget _loginButton(size) => Material(
       borderRadius: BorderRadius.circular(5),
       child: MaterialButton(
@@ -193,81 +201,113 @@ class ParentLogin extends StatefulWidget{
 }
 
 class _ParentLoginState extends State<ParentLogin>{
+  Widget circularLoadingIndicator() =>Center(child: circularLoadingIndicator());
+  final GoogleSignIn googleSignIn = GoogleSignIn();
+  bool _isSigningIn;
   Widget build(BuildContext context){
+    Widget _cancelCrossButton(){
+      return ListTile(
+          leading: IconButton(
+              icon:Icon(Icons.close,size: 30),
+              color: Colors.black,
+              onPressed: (){
+                Navigator.of(context).pop();
+              },
+          ),
+      );
+    }
+    Widget _screenInfo(){
+      return Container(
+          padding: EdgeInsets.only(left:20),
+          child:Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text("Parental Login",
+                    style: TextStyle(
+                        fontSize: 30,
+                        fontWeight: FontWeight.bold,
+                    )
+                ),
+                Divider(height:10),
+                Text("Login using the following",
+                    style: TextStyle(
+                        fontSize: 20,
+                    )
+                )
+              ]
+          ));
+    }
+    Widget _signInButton(IconData icon, String text, Color color,var func){
+      return Container(
+          width: MediaQuery.of(context).size.width,
+          padding: EdgeInsets.fromLTRB(15,0,15,0),
+          child: FlatButton(
+              color: color,
+              padding: EdgeInsets.fromLTRB(0,20,0,20),
+              child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(icon,color:Colors.white),
+                    SizedBox(width: 10),
+                    Text(text,style:
+                        TextStyle(color:Colors.white))
+                  ]
+              ),
+              onPressed: () {
+                func();
+              },
+          ));
+    }
+    Widget _signUpScreen(){
+      return SafeArea(
+          child:Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Divider(height:20),
+                _cancelCrossButton(),
+                Divider(height:40),
+                _screenInfo(),
+                Divider(height:40),
+                _signInButton(FontAwesomeIcons.google,"Sign In with"
+                    " Google",Color(0xff4285F4), _googlesignin),
+                Divider(height:20),
+                _signInButton(FontAwesomeIcons.facebook,"Sign In with Facebook",Color(0xff4267B2),null),
+                Container()
+              ]
+          ));
+
+    }
     return Scaffold(
-        body: SafeArea(
-            child:Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Divider(height:20),
-                  ListTile(
-                      leading: IconButton(
-                          icon:Icon(Icons.close,size: 30),
-                          color: Colors.black,
-                          onPressed: (){
-                            Navigator.of(context).pop();
-                          },
-                          ),
-                  ),
-                  Divider(height:30),
-                  Container(
-                      padding: EdgeInsets.only(left:20),
-                      child:Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text("Parental Login",
-                            style: TextStyle(
-                                fontSize: 30,
-                                fontWeight: FontWeight.bold,
-                                )
-                            ),
-                  Divider(height:10),
-                        Text("Login using the following",
-                            style: TextStyle(
-                                fontSize: 20,
-                                )
-                            )
-                      ]
-                      )),
-                  Divider(height:20),
-                  Container(
-                      padding: EdgeInsets.fromLTRB(15,20,15,20),
-                      child: FlatButton(
-                          color: Color(0xff4285F4),
-                      padding: EdgeInsets.fromLTRB(0,20,0,20),
-                          child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(FontAwesomeIcons.google,color:Colors.white),
-                                SizedBox(width: 10),
-                                Text("Sign In with Google",style:
-                                    TextStyle(color:Colors.white))
-                              ]
-                              ),
-                          onPressed: () {
-                          },
-                      )),
-                  Container(
-                      padding: EdgeInsets.fromLTRB(15,0,15,0),
-                      child: FlatButton(
-                          color: Color(0xff4267B2),
-                      padding: EdgeInsets.fromLTRB(0,20,0,20),
-                          child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(FontAwesomeIcons.facebook,color:
-                                    Colors.white),
-                                SizedBox(width: 10),
-                                Text("Sign In with Facebook",style:
-                                    TextStyle(color:Colors.white))
-                              ]
-                              ),
-                          onPressed: () {
-                          },
-                      )),
-                  Container()
-                ]
-            ))
-    );
+        body:  _signUpScreen(),
+        );
+  }
+  void _googlesignin(){
+    signInWithGoogle().then((String str){
+      Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder:(context)=>ParentHomePage()),
+          (Route<dynamic> route)=>false
+          );
+    }).catchError((e)=>print(e));
+  }
+  Future<String> signInWithGoogle() async{
+    _isSigningIn = true;
+    final user = await googleSignIn.signIn();
+    if(user == null){
+      _isSigningIn = false;
+      return "Cannot login";
+    }else{
+      final googleAuth = await user.authentication;
+
+      final credential = GoogleAuthProvider.credential(
+            accessToken: googleAuth.accessToken,
+            idToken: googleAuth.idToken
+          );
+
+      await FirebaseAuth.instance.signInWithCredential(credential);
+
+      _isSigningIn = false;
+      return user.displayName;
+    }
   }
 }
+

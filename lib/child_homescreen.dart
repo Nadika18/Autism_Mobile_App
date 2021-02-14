@@ -1,6 +1,21 @@
 import 'package:flutter/material.dart';
 import 'utils.dart';
 import 'tasks.dart';
+import 'package:flutter_tts/flutter_tts.dart';
+
+
+FlutterTts flutterTts = FlutterTts();
+speak(String text)async{
+  String _text= text;
+  await flutterTts.setLanguage("en US");
+  await flutterTts.setPitch(1);
+  await flutterTts.setVolume(1.0);
+  await flutterTts.speak(_text);
+
+  }
+
+var task_Name = "MAke your Bed";
+var task_Description= "make it comfy to tuck yourself in";
 
 
 class ChildHomePage extends StatefulWidget {
@@ -43,8 +58,10 @@ class _ChildHomePageState extends State<ChildHomePage> {
               Text(taskDescription, 
                   style: TextStyle(
                       fontSize: 80)
-              ) 
+              )
+             
             ]
+            
         )
     );
   }
@@ -100,11 +117,11 @@ class _ChildHomePageState extends State<ChildHomePage> {
                   SizedBox(
                       width: 20,
                   ),
-                  Text("Hear todays status",
+                  TextButton(child: Text("Hear todays status",
                       style: Theme.of(context)
                       .textTheme
                       .headline6
-                      .copyWith(color: Colors.white))
+                      .copyWith(color: Colors.white)), onPressed: (){speak(task_Name + task_Description);})
 
                 ]
             ), 
@@ -203,7 +220,7 @@ class _ChildHomePageState extends State<ChildHomePage> {
                                 crossAxisAlignment:
                                 CrossAxisAlignment.center,
                                 children: [
-                                  Text("Make your Bed",
+                                  Text(task_Name,
                                       style:
                                       TextStyle(
                                           fontSize: 16,
@@ -213,8 +230,7 @@ class _ChildHomePageState extends State<ChildHomePage> {
                                   ),
                                   Container(
                                       padding: const EdgeInsets.all(15),
-                                      child:Text("make it comfy to tuck yourself"
-                                          " in",
+                                      child:Text(task_Description,
                                           textAlign: TextAlign.center,
                                       )
                                   ),
@@ -244,7 +260,7 @@ class _ChildHomePageState extends State<ChildHomePage> {
                                     Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                         children: [
-                                          Icon(Icons.adb,size:30),
+                                          Icon(Icons.audiotrack,size:30),
                                           Icon(Icons.add),
                                           Icon(Icons.check_box_rounded),
                                         ],
@@ -355,3 +371,5 @@ class _ChildHomePageState extends State<ChildHomePage> {
                           ));
   }
 }
+
+

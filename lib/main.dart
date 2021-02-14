@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'child_homescreen.dart';
-
+import 'childpecs.dart';
 
 void main() {
   runApp(MyApp());
@@ -17,7 +17,8 @@ class MyApp extends StatelessWidget {
             primarySwatch: Colors.purple,
             visualDensity: VisualDensity.adaptivePlatformDensity,
         ),
-        home: ChildHomePage(title: "ChildHomeScreen"),
+        home: ChildHomePage()
+
     );
   }
 }

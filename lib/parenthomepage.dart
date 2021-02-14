@@ -1,6 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import './circleimage.dart'; 
+import './utils.dart'; 
 
 class  ParentsHomePage extends StatelessWidget {
   @override
@@ -33,7 +33,7 @@ class ParentHomePageTop extends StatelessWidget {
             trailing:  TextButton(
               child:Text('View Profile',style: TextStyle(color: Colors.blue[800])), 
               onPressed: (){},), 
-            leading: CircleImage(),
+            leading: CircularImageContainer(),
             contentPadding: EdgeInsets.all(25),
             onLongPress: (){},
 

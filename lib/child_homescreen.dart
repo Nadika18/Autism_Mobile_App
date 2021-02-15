@@ -368,7 +368,8 @@ class _ChildHomePageState extends State<ChildHomePage> {
         )),
         body: SafeArea(
             child: Stack(
-                children: [Column(
+                children: [
+                  Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children:[
                       ConstrainedBox(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'forms.dart';
+import 'childpecs.dart';
 import 'utils.dart'; 
 
 class ParentHomePage extends StatefulWidget {
@@ -99,6 +100,14 @@ class _ParentHomePageState extends State<ParentHomePage>{
     ).then((value)=> setState((){}));
   }
 
+  void navigatePecs(){
+    Navigator.push(
+        _scaffoldKey.currentContext, MaterialPageRoute(
+            builder: (context) => ChildPecs(),
+            ),
+        );
+  }
+
   Widget _buildGridView(Size size){
     return GridView.count(
         crossAxisCount: 2,
@@ -109,7 +118,7 @@ class _ParentHomePageState extends State<ParentHomePage>{
           _buildGridItem("Tasks",Icons.pending_actions,_gotoTaskForm),
           _buildGridItem("Reports",Icons.library_books_outlined,null),
           _buildGridItem("Rewards",Icons.auto_awesome,null),
-          _buildGridItem("PECS",Icons.picture_in_picture_sharp,null),
+          _buildGridItem("PECS",Icons.picture_in_picture_sharp,navigatePecs),
           _buildGridItem("Tutorials",Icons.assignment_turned_in_outlined,null),
           _buildGridItem("Questions",Icons.question_answer_sharp,null),
         ],

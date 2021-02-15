@@ -3,7 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 
-Widget Cards_Content(String path, String text) {
+
+// ignore: camel_case_types
+class IWant extends StatefulWidget {
+  @override
+  _IWantState createState() => _IWantState();
+}
+
+// ignore: camel_case_types
+class _IWantState extends State<IWant> {
+Widget _cardContent(String path, String text) {
   String _text= text;
   String _path= path;
   return Container(
@@ -23,34 +32,25 @@ Widget Cards_Content(String path, String text) {
                 ),
             ) );
 }
-
-// ignore: camel_case_types
-class I_want extends StatefulWidget {
-  @override
-  _I_wantState createState() => _I_wantState();
-}
-
-// ignore: camel_case_types
-class _I_wantState extends State<I_want> {
   @override
   Widget build(BuildContext context) {
     return GridView.count(
         crossAxisCount: 2,
-        children: [ Cards_Content('assets/apple.jpg', "APPLE")
-          ,Cards_Content('assets/banana.jpg', "BANANA"),
-          Cards_Content('assets/watermelon.jpg', "WATERMELON"),
-          Cards_Content('assets/milk.jpg', "MILK"),
-          Cards_Content('assets/litchi.jpg', "LITCHI"),
-          Cards_Content('assets/cake.jpg', "CAKE"),
-          Cards_Content('assets/chocolate.jpg', "CHOCOLATE"),
-          Cards_Content('assets/momo.jpg', "MOMO"),
+        children: [ _cardContent('assets/apple.jpg', "APPLE")
+          ,_cardContent('assets/banana.jpg', "BANANA"),
+          _cardContent('assets/watermelon.jpg', "WATERMELON"),
+          _cardContent('assets/milk.jpg', "MILK"),
+          _cardContent('assets/litchi.jpg', "LITCHI"),
+          _cardContent('assets/cake.jpg', "CAKE"),
+          _cardContent('assets/chocolate.jpg', "CHOCOLATE"),
+          _cardContent('assets/momo.jpg', "MOMO"),
 
             ]
             ) ;
   }
 }
 
-Widget Cards_Content1(Widget icon, String text) {
+Widget _cardContent(Widget icon, String text) {
   String _text= text;
   Widget _icon= icon;
   return Container(
@@ -73,29 +73,36 @@ Widget Cards_Content1(Widget icon, String text) {
 }
 
 
-class I_am extends StatefulWidget {
+class IAm extends StatefulWidget {
   @override
-  _I_amState createState() => _I_amState();
+  _IAmState createState() => _IAmState();
 }
 
-class _I_amState extends State<I_am> {
+class _IAmState extends State<IAm> {
   @override
   Widget build(BuildContext context) {
     return GridView.count(
         crossAxisCount: 2,
-        children: [ Cards_Content1(Icon(FontAwesomeIcons.angry, size: 90), "ANGRY")
-          ,Cards_Content1(Icon(FontAwesomeIcons.tired, size: 90), "TIRED"),
-          Cards_Content1(Icon(FontAwesomeIcons.laughBeam, size: 90), "HAPPY"),
-          Cards_Content1(Icon(FontAwesomeIcons.sadCry, size: 90), "CRYING"),
-          Cards_Content1(Icon(FontAwesomeIcons.sadTear, size: 90), "SAD"),
-          Cards_Content1(Icon(FontAwesomeIcons.surprise, size: 90), "SURPRISED"),
-          Cards_Content1(Icon(FontAwesomeIcons.dizzy, size: 90), "DIZZY"),
-          Cards_Content1(Icon(FontAwesomeIcons.grinHearts, size: 90), "LOVED")
+        children: [ _cardContent(Icon(FontAwesomeIcons.angry, size: 90), "ANGRY")
+          ,_cardContent(Icon(FontAwesomeIcons.tired, size: 90), "TIRED"),
+          _cardContent(Icon(FontAwesomeIcons.laughBeam, size: 90), "HAPPY"),
+          _cardContent(Icon(FontAwesomeIcons.sadCry, size: 90), "CRYING"),
+          _cardContent(Icon(FontAwesomeIcons.sadTear, size: 90), "SAD"),
+          _cardContent(Icon(FontAwesomeIcons.surprise, size: 90), "SURPRISED"),
+          _cardContent(Icon(FontAwesomeIcons.dizzy, size: 90), "DIZZY"),
+          _cardContent(Icon(FontAwesomeIcons.grinHearts, size: 90), "LOVED")
             ]
             ) ;
   }
 }
-Widget Cards_Content2(String path, String text) {
+class Greetings extends StatefulWidget {
+  @override
+  _GreetingsState createState() => _GreetingsState();
+}
+
+// ignore: camel_case_types
+class _GreetingsState extends State<Greetings> {
+Widget _cardContent(String path, String text) {
   String _text= text;
   String _path= path;
   return Container(
@@ -115,25 +122,18 @@ Widget Cards_Content2(String path, String text) {
                 ),
             ) );
 }
-class Greetings extends StatefulWidget {
-  @override
-  _GreetingsState createState() => _GreetingsState();
-}
-
-// ignore: camel_case_types
-class _GreetingsState extends State<Greetings> {
   @override
   Widget build(BuildContext context) {
     return GridView.count(
         crossAxisCount: 2,
-        children: [ Cards_Content2('assets/hello.jpg', "HELLO")
-          ,Cards_Content2('assets/goodbye.jpg', "GOODBYE"),
-          Cards_Content2('assets/good_morning.jpg', "GOOD MORNING"),
-          Cards_Content2('assets/good_night.jpg', "GOOD NIGHT"),
-          Cards_Content2('assets/thank_you.jpg', "THANK YOU"),
-          Cards_Content2('assets/sorry.jpg', "SORRY"),
-          Cards_Content2('assets/i_love_you.jpg', "I LOVE YOU"),
-          Cards_Content2('assets/i_miss_you.jpg', "I MISS YOU"),
+        children: [ _cardContent('assets/hello.jpg', "HELLO")
+          ,_cardContent('assets/goodbye.jpg', "GOODBYE"),
+          _cardContent('assets/good_morning.jpg', "GOOD MORNING"),
+          _cardContent('assets/good_night.jpg', "GOOD NIGHT"),
+          _cardContent('assets/thank_you.jpg', "THANK YOU"),
+          _cardContent('assets/sorry.jpg', "SORRY"),
+          _cardContent('assets/i_love_you.jpg', "I LOVE YOU"),
+          _cardContent('assets/i_miss_you.jpg', "I MISS YOU"),
 
             ]
             ) ;
@@ -152,8 +152,6 @@ speak(String text)async{
 
   }
 
-
-
 class ChildPecs extends StatefulWidget {
   ChildPecs({Key key}) : super(key: key);
   @override
@@ -166,7 +164,7 @@ class _ChildPecsState extends State<ChildPecs> {
   int _selectedIndex = 0;
   List<Widget> _widgetOptions = <Widget>[
     
-    I_want(), I_am(), Greetings()
+    IWant(), IAm(), Greetings()
   ];
 
   void _onItemTapped(int index) {

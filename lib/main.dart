@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'child_homescreen.dart';
 import 'childpecs.dart';
+import 'parenthomepage.dart';
 
 void main() {
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -17,8 +17,7 @@ class MyApp extends StatelessWidget {
             primarySwatch: Colors.purple,
             visualDensity: VisualDensity.adaptivePlatformDensity,
         ),
-        home: ChildHomePage()
-
+        home: ParentHomePage(),
     );
   }
 }

@@ -4,6 +4,7 @@ import 'childpecs.dart';
 import 'parenthomepage.dart';
 import 'questions_by_parents.dart';
 import 'create_question.dart';
+import 'dependents.dart';
 
 void main() {
   runApp(MyApp());
@@ -19,7 +20,7 @@ class MyApp extends StatelessWidget {
             primarySwatch: Colors.purple,
             visualDensity: VisualDensity.adaptivePlatformDensity,
         ),
-        home: ChildHomePage()
+        home: Dependents()
     );
   }
 }

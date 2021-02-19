@@ -3,38 +3,34 @@ import 'package:quiz_view/quiz_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
+
 class QuestionsByParents extends StatefulWidget {
   @override
   _QuestionsByParentsState createState() => _QuestionsByParentsState();
 }
 
 class _QuestionsByParentsState extends State<QuestionsByParents> {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      child: SingleChildScrollView(
-        child: Center(
-          child: Column(
-            children: [
-              QuizView(
+  Widget Quizquestion(String _questionno, String _imagepath, String _question,String _option1, String _option2,String _option3,String _option4){
+    return QuizView(
                 image: Container(
                   height: 150,
                   width: 140,
-                  child: Image.asset('assets/image2.png',fit: BoxFit.fill,),
+                  child: Image.asset(_imagepath,fit: BoxFit.fill,),
                 ),
                   showCorrect: true,
-                  questionTag: 'Question 1',
+                  questionTag: _questionno,
+                 
                   questionColor: Colors.black,
-                  tagColor: Colors.yellowAccent,
+                  
                   backgroundColor: Colors.white70,
-                  tagBackgroundColor: Colors.red.shade300,
+                 
                   answerColor: Colors.white,
                   answerBackgroundColor: Colors.deepPurple,
-                  question: 'What is the Color of the Player?',
+                  question: _question,
                   height: MediaQuery.of(context).size.height,
                   width: MediaQuery.of(context).size.width,
-                  rightAnswer: 'Green',
-                  wrongAnswers: ['Red','Yellow'],
+                  rightAnswer: _option1,
+                  wrongAnswers: [_option2,_option3, _option4],
                   onRightAnswer: ()=> print('Right!'),
                   onWrongAnswer: (){
                   Alert(
@@ -42,34 +38,23 @@ class _QuestionsByParentsState extends State<QuestionsByParents> {
                       title: 'Wrong!',
                   ).show();
                   }
-              ),
-              SizedBox(height: 10,),
-              QuizView(
-                  image: Container(
-                    height: 150,
-                    width: 140,
-                    child: Image.asset('assets/image3.png',fit: BoxFit.fill,),
-                  ),
-                  showCorrect: true,
-                  questionTag: 'Question 2',
-                  questionColor: Colors.black,
-                  tagColor: Colors.yellowAccent,
-                  backgroundColor: Colors.white70,
-                  tagBackgroundColor: Colors.red.shade300,
-                  answerColor: Colors.white,
-                  answerBackgroundColor: Colors.deepPurple,
-                  question: 'What is the Color of the Player?',
-                  height: MediaQuery.of(context).size.height,
-                  width: MediaQuery.of(context).size.width,
-                  rightAnswer: 'Red',
-                  wrongAnswers: ['Green','Yellow'],
-                  onRightAnswer: ()=> print('Right!'),
-                  onWrongAnswer: (){
-                    Alert(
-                      context: context,
-                      title: 'Wrong!',
-                    ).show();
-                  })
+              );
+  }
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: SingleChildScrollView(
+        child: Center(
+          child: Column(
+            children: [
+              Divider(), 
+              Quizquestion('1', 'assets/apple.jpg', 'Which fruit is this?' , "Apple", "Banana", "Orange", "Mango"),
+              Divider(),
+            Quizquestion('2', 'assets/banana.jpg', 'Which fruit is this?' , "Banana", "Apple", "Orange", "Mango")
+
+              
+              
+              
             ],
             ),
           )

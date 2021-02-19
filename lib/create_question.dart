@@ -3,11 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 class CreateQuestion extends StatefulWidget {
+  
   @override
   _CreateQuestionState createState() => _CreateQuestionState();
+  
 }
 
 class _CreateQuestionState extends State<CreateQuestion> {
+  bool isLoading = false;
+
   File _image;
   final picker = ImagePicker();
 
@@ -27,9 +31,13 @@ class _CreateQuestionState extends State<CreateQuestion> {
   String _option2;
   String _option3;
   String _option4;
+  
+
+ 
 
   final GlobalKey<FormState> _formkey = GlobalKey();
   Widget _buildQuestion(){
+    
     return Material(
       child: TextFormField(
       decoration: InputDecoration(
@@ -121,7 +129,10 @@ class _CreateQuestionState extends State<CreateQuestion> {
     
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(icon:Icon(Icons.keyboard_arrow_left_sharp , color: Colors.black, size: 45)), 
+        leading: IconButton(
+          icon:Icon(Icons.keyboard_arrow_left_sharp , 
+          color: Colors.black, size: 45), 
+        onPressed: (){}), 
         backgroundColor: Colors.white, 
         title: Text("Questions", style: TextStyle(color: Colors.black),),),
       body: Container(
@@ -155,7 +166,7 @@ class _CreateQuestionState extends State<CreateQuestion> {
                         textColor: Colors.blue[300],
                         
                         child: Text("+ Add Image "),
-                        onPressed: (){})),
+                        onPressed: (){getImage();})),
                         ListTile(
                       title:_buildOption3(), 
                       trailing:OutlineButton(
@@ -163,7 +174,7 @@ class _CreateQuestionState extends State<CreateQuestion> {
                         textColor: Colors.blue[300],
                         
                         child: Text("+ Add Image "),
-                        onPressed: (){})),
+                        onPressed: (){getImage();})),
                         ListTile(
                       title:_buildOption4(), 
                       trailing:OutlineButton(
@@ -171,7 +182,7 @@ class _CreateQuestionState extends State<CreateQuestion> {
                         textColor: Colors.blue[300],
                         
                         child: Text("+ Add Image "),
-                        onPressed: (){})),
+                        onPressed: (){getImage();})),
            ],),)],)  )
            ,
            Divider(color: Colors.white),
@@ -193,6 +204,14 @@ class _CreateQuestionState extends State<CreateQuestion> {
               print(_option4);
               print(_image);
               
+              Map<String, String> questionMap = {
+        "question": _question,
+        "option1": _option1,
+        "option2": _option2,
+        "option3": _option3,
+        "option4": _option4
+      };
+                          
             })
               ),
               ])

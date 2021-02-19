@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'utils.dart';
-import 'forms.dart';
-import 'tasks.dart';
+import 'package:easytalk/utils/customWidgets.dart';
+import 'package:easytalk/parent/forms.dart';
+import 'package:easytalk/services/datasets/tasks.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 
 FlutterTts flutterTts = FlutterTts();

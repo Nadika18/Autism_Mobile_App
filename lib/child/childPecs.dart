@@ -1,4 +1,4 @@
-import 'package:easytalk/child_homescreen.dart';
+import 'package:easytalk/child/childHomepage.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_tts/flutter_tts.dart';

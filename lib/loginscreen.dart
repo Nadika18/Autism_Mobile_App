@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/foundation.dart';
 import 'package:provider/provider.dart';
-import 'authservice.dart';
-import 'parenthomepage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:easytalk/services/firebase/authservice.dart';
+import 'package:easytalk/parent/parentHomepage.dart';
 
 class MainLoginScreen extends StatefulWidget {
   @override
@@ -189,22 +189,22 @@ class ParentLogin extends StatefulWidget {
 class _ParentLoginState extends State<ParentLogin> {
   bool _isSigningIn = false;
   void _googlesignin() async {
-    try{
-    final auth = Provider.of<AuthService>(context,listen:false);
-    final User user = await auth.signInWithGoogle();
-    print('${user.uid}');
-    }catch(e){
+    try {
+      final auth = Provider.of<AuthService>(context, listen: false);
+      final User user = await auth.signInWithGoogle();
+      print('${user.uid}');
+    } catch (e) {
       print(e);
     }
-      Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (context) => ParentHomePage()),
-          (Route<dynamic> route) => false);
+    Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (context) => ParentHomePage()),
+        (Route<dynamic> route) => false);
   }
+
   Widget circularLoadingIndicator() =>
       Center(child: circularLoadingIndicator());
   final GoogleSignIn googleSignIn = GoogleSignIn();
   Widget build(BuildContext context) {
-
     Widget _cancelCrossButton() {
       return ListTile(
         leading: IconButton(
@@ -248,11 +248,12 @@ class _ParentLoginState extends State<ParentLogin> {
               Text(text, style: TextStyle(color: Colors.white))
             ]),
             onPressed: () {
-              setState(() {                                
+              setState(() {
                 _isSigningIn = true;
               });
-              func().then(
-                  (_) => setState((){_isSigningIn=false;}));
+              func().then((_) => setState(() {
+                    _isSigningIn = false;
+                  }));
             },
           ));
     }
@@ -279,10 +280,11 @@ class _ParentLoginState extends State<ParentLogin> {
     }
 
     return Scaffold(
-      body: _isSigningIn ? Center(child:CircularProgressIndicator()):_signUpScreen(),
+      body: _isSigningIn
+          ? Center(child: CircularProgressIndicator())
+          : _signUpScreen(),
     );
   }
-
 
   Future<String> signInWithGoogle() async {
     _isSigningIn = true;

@@ -13,6 +13,17 @@ Widget circularImageContainer(String location, double size) {
   );
 }
 
+Widget circularImageContainerNoAlign(String location, double size) {
+  double _size = size;
+  return Container(
+      width: _size,
+      height: _size,
+      decoration: new BoxDecoration(
+          shape: BoxShape.circle,
+          image: new DecorationImage(
+              fit: BoxFit.cover, image: new AssetImage(location))));
+}
+
 Widget circularImageContainerLink(String location, double size) {
   double _size = size;
   return Center(

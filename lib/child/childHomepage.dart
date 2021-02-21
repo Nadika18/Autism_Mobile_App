@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:easytalk/utils/customWidgets.dart';
 import 'package:easytalk/parent/forms.dart';
-import 'package:easytalk/services/datasets/tasks.dart';
+import 'package:easytalk/services/models/tasks.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 
 FlutterTts flutterTts = FlutterTts();
@@ -13,8 +13,8 @@ speak(String text) async {
   await flutterTts.speak(_text);
 }
 
-var task_Name = "MAke your Bed";
-var task_Description = "make it comfy to tuck yourself in";
+var taskName = "MAke your Bed";
+var taskDescription = "make it comfy to tuck yourself in";
 
 class ChildHomePage extends StatefulWidget {
   ChildHomePage({Key key, this.title}) : super(key: key);
@@ -58,7 +58,6 @@ class _ChildHomePageState extends State<ChildHomePage> {
           child: Icon(Icons.delete),
           onPressed: () {
             setState(() {
-              removeTodo(index);
               remainingTasks = todoName.length;
             });
           },
@@ -103,7 +102,7 @@ class _ChildHomePageState extends State<ChildHomePage> {
                       .headline6
                       .copyWith(color: Colors.white)),
               onPressed: () {
-                speak(task_Name + task_Description);
+                speak(taskName + taskDescription);
               })
         ]),
       ),
@@ -191,7 +190,7 @@ class _ChildHomePageState extends State<ChildHomePage> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Text(
-                          task_Name,
+                          taskName,
                           style: TextStyle(
                               fontSize: 16, fontWeight: FontWeight.bold),
                           textAlign: TextAlign.center,
@@ -199,7 +198,7 @@ class _ChildHomePageState extends State<ChildHomePage> {
                         Container(
                             padding: const EdgeInsets.all(15),
                             child: Text(
-                              task_Description,
+                              taskDescription,
                               textAlign: TextAlign.center,
                             )),
                       ],
@@ -234,7 +233,7 @@ class _ChildHomePageState extends State<ChildHomePage> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => BaseForm(),
+                              builder: (context) => TaskForm(uid: name),
                             )).then((value) => setState(() {}));
                       },
                     ),

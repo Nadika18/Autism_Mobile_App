@@ -1,14 +1,19 @@
+import 'package:easytalk/services/firebase/databaseservice.dart';
 import "package:flutter/material.dart";
-import 'package:easytalk/services/datasets/tasks.dart';
+import 'package:easytalk/services/models/tasks.dart';
+import 'package:provider/provider.dart';
 
-class BaseForm extends StatefulWidget {
+class TaskForm extends StatefulWidget {
+  final String uid;
+  TaskForm({@required this.uid});
   @override
-  _BaseFormState createState() => _BaseFormState();
+  _TaskFormState createState() => _TaskFormState();
 }
 
-class _BaseFormState extends State<BaseForm> {
+class _TaskFormState extends State<TaskForm> {
   final _formKey = GlobalKey<FormState>();
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  String uid;
   final title = "enter a todo";
   var taskName;
   var taskDescription;
@@ -19,6 +24,7 @@ class _BaseFormState extends State<BaseForm> {
   @override
   void initState() {
     super.initState();
+    uid = widget.uid;
     selected = false;
     taskDate = DateTime.now();
     taskTime = TimeOfDay.now();
@@ -50,7 +56,6 @@ class _BaseFormState extends State<BaseForm> {
       });
       _scaffoldKey.currentState.showSnackBar(
           snackbar("Date Selected", Duration(milliseconds: 1000)));
-      FocusScope.of(_scaffoldKey.currentContext).nextFocus();
     } else {
       _scaffoldKey.currentState
           .showSnackBar(snackbar("Cancelled", Duration(milliseconds: 500)));
@@ -68,7 +73,6 @@ class _BaseFormState extends State<BaseForm> {
       });
       _scaffoldKey.currentState.showSnackBar(
           snackbar("Date Selected", Duration(milliseconds: 1000)));
-      FocusScope.of(_scaffoldKey.currentContext).nextFocus();
     } else {
       _scaffoldKey.currentState
           .showSnackBar(snackbar("Cancelled", Duration(milliseconds: 500)));
@@ -167,8 +171,8 @@ class _BaseFormState extends State<BaseForm> {
           child: Text('+ Add Task'),
           onPressed: () {
             if (_formKey.currentState.validate()) {
-              addTodo(taskName, taskDescription, taskDate, selected);
               _scaffoldKey.currentState.showSnackBar(snackBar);
+
               Navigator.of(_scaffoldKey.currentContext).pop();
               //serverside
               //variables already available
@@ -198,12 +202,204 @@ class _BaseFormState extends State<BaseForm> {
 
   @override
   Widget build(BuildContext context) {
+    var appBar = AppBar(
+        backgroundColor: Colors.white,
+        leading: IconButton(
+            icon: Icon(Icons.keyboard_arrow_left_sharp,
+                color: Colors.black, size: 45),
+            onPressed: () {
+              Navigator.of(context).pop();
+            }),
+        title: Text(
+          "Add Task",
+          style: TextStyle(color: Colors.black),
+        ));
     return Scaffold(
         key: _scaffoldKey,
         resizeToAvoidBottomInset: false,
-        appBar: AppBar(
-          title: Text(title),
-        ),
+        appBar: appBar,
         body: _buildForm());
+  }
+}
+
+class DependentForm extends StatefulWidget {
+  @override
+  _DependentFormState createState() => _DependentFormState();
+}
+
+class _DependentFormState extends State<DependentForm> {
+  final _formKey = GlobalKey<FormState>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  TextEditingController _nameController = TextEditingController();
+  TextEditingController _regcodeController = TextEditingController();
+  TextEditingController _passcodeController = TextEditingController();
+  String uid;
+  final title = "Create a new dependent";
+
+  Widget _buildInputName() {
+    return Container(
+        child: Column(children: [
+      Text("Child Name."),
+      TextFormField(
+        controller: _nameController,
+        textInputAction: TextInputAction.next,
+        autofocus: true,
+        validator: (value) {
+          if (value.isEmpty) {
+            return "enter the child name";
+          }
+          return null;
+        },
+      ),
+    ]));
+  }
+
+  Widget _buildInputRegCode() {
+    return Container(
+        child: Column(children: [
+      Text("Enter Registration code(6-digit)"),
+      TextFormField(
+        textInputAction: TextInputAction.next,
+        controller: _regcodeController,
+        keyboardType: TextInputType.number,
+        validator: (value) {
+          if (!value.isNotEmpty) {
+            return "enter registration code";
+          }
+          int intval = int.parse(value) ~/ 100000;
+          if ((intval < 1) || (intval > 10)) {
+            print(intval);
+            return "The length of the code is incorrect";
+          }
+          return null;
+        },
+      ),
+    ]));
+  }
+
+  Widget _buildInputPasscode() {
+    return Container(
+        child: Column(children: [
+      Text("Enter Passcode(4-digit)"),
+      TextFormField(
+        controller: _passcodeController,
+        keyboardType: TextInputType.number,
+        validator: (value) {
+          if (!value.isNotEmpty) {
+            return "enter a passcode";
+          }
+          int intval = int.parse(value) ~/ 1000;
+          if ((intval < 1) || (intval > 10)) {
+            print(intval);
+            return "enter a 4 digit passcode";
+          }
+          return null;
+        },
+      ),
+    ]));
+  }
+
+  void _confirmAddDialog() {
+    var dbase = Provider.of<DataBaseService>(_scaffoldKey.currentContext,
+        listen: false);
+    final snackBarAdd = SnackBar(
+      content: Text('Adding the dependent..... Please Wait'),
+      duration: Duration(milliseconds: 1000),
+    );
+    final snackBarCancel = SnackBar(
+      content: Text('Cancelled.....'),
+      duration: Duration(milliseconds: 500),
+    );
+    showDialog(
+        context: _scaffoldKey.currentContext,
+        child: AlertDialog(
+          contentPadding: EdgeInsets.all(15),
+          title: Text("Are you sure you want to add dependent?"),
+          actions: [
+            Text(
+                "This registration code will be occupied for your child if it is available and you cannot modify it."),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                FlatButton(
+                  child: Text("Cancel"),
+                  onPressed: () {
+                    Navigator.of(_scaffoldKey.currentContext).pop();
+                    _scaffoldKey.currentState.showSnackBar(snackBarCancel);
+                  },
+                ),
+                FlatButton(
+                  child: Text("Yes"),
+                  onPressed: () async {
+                    await dbase.parent.createNewChild(
+                        _nameController.text, _passcodeController.text);
+                    Navigator.of(_scaffoldKey.currentContext).pop();
+                    _scaffoldKey.currentState.showSnackBar(snackBarAdd);
+                    //TODO:serverside
+                    //variables already available
+                  },
+                )
+              ],
+            )
+          ],
+        ));
+  }
+
+  Widget _submitForm() {
+    return Container(
+      child: Align(
+        alignment: Alignment.centerRight,
+        child: RaisedButton(
+          child: Text('+ Add Dependent'),
+          onPressed: () {
+            if (_formKey.currentState.validate()) {
+              _confirmAddDialog();
+            }
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _buildForm() {
+    return Form(
+      key: _formKey,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          _buildInputName(),
+          _buildInputRegCode(),
+          _buildInputPasscode(),
+          _submitForm()
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    var appBar = AppBar(
+        backgroundColor: Colors.white,
+        leading: IconButton(
+            icon: Icon(Icons.keyboard_arrow_left_sharp,
+                color: Colors.black, size: 45),
+            onPressed: () {
+              Navigator.of(context).pop();
+            }),
+        title: Text(
+          "Add Dependent",
+          style: TextStyle(color: Colors.black),
+        ));
+    return SafeArea(
+        child: LayoutBuilder(
+            builder: (context, constraints) => Scaffold(
+                key: _scaffoldKey,
+                resizeToAvoidBottomInset: false,
+                appBar: appBar,
+                body: SingleChildScrollView(
+                    child: Container(
+                        height:
+                            constraints.maxHeight - appBar.preferredSize.height,
+                        child: _buildForm())))));
   }
 }

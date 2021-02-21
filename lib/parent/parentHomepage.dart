@@ -1,3 +1,8 @@
+import 'package:easytalk/parent/createQuestions.dart';
+import 'package:easytalk/parent/dependents.dart';
+import 'package:easytalk/parent/questionsFromParents.dart';
+import 'package:easytalk/parent/taskview.dart';
+import 'package:easytalk/services/firebase/databaseservice.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -95,10 +100,9 @@ class _ParentHomePageState extends State<ParentHomePage> {
     );
   }
 
-  void _gotoTaskForm() {
-    var _context = _scaffoldKey.currentContext;
-    Navigator.push(
-            _context, MaterialPageRoute(builder: (_context) => BaseForm()))
+  void navigateTaskView() {
+    Navigator.push(_scaffoldKey.currentContext,
+            MaterialPageRoute(builder: (context) => TaskView(uid: name)))
         .then((value) => setState(() {}));
   }
 
@@ -111,19 +115,37 @@ class _ParentHomePageState extends State<ParentHomePage> {
     );
   }
 
+  void krish() async {
+    var database = Provider.of<DataBaseService>(_scaffoldKey.currentContext,
+        listen: false);
+    database.printData(database.getUserDoc());
+  }
+
+  void navigateDependents() {
+    Navigator.push(_scaffoldKey.currentContext,
+        MaterialPageRoute(builder: (context) => Dependents()));
+  }
+
+  void navigateQuestions() {
+    Navigator.push(_scaffoldKey.currentContext,
+        MaterialPageRoute(builder: (context) => CreateQuestion()));
+  }
+
   Widget _buildGridView(Size size) {
     return GridView.count(
       crossAxisCount: 2,
       childAspectRatio: (size.width / 2) / (size.height / 5),
       children: [
-        _buildGridItem("Manage Routine", Icons.calendar_today, null),
-        _buildGridItem("Dependents", Icons.perm_identity_rounded, null),
-        _buildGridItem("Tasks", Icons.pending_actions, _gotoTaskForm),
+        _buildGridItem("Manage Routine", Icons.calendar_today, krish),
+        _buildGridItem(
+            "Dependents", Icons.perm_identity_rounded, navigateDependents),
+        _buildGridItem("Tasks", Icons.pending_actions, navigateTaskView),
         _buildGridItem("Reports", Icons.library_books_outlined, null),
         _buildGridItem("Rewards", Icons.auto_awesome, null),
         _buildGridItem("PECS", Icons.picture_in_picture_sharp, navigatePecs),
         _buildGridItem("Tutorials", Icons.assignment_turned_in_outlined, null),
-        _buildGridItem("Questions", Icons.question_answer_sharp, null),
+        _buildGridItem(
+            "Questions", Icons.question_answer_sharp, navigateQuestions),
       ],
     );
   }

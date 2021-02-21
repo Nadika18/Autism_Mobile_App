@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:easytalk/services/firebase/databaseservice.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/foundation.dart';
@@ -188,23 +189,60 @@ class ParentLogin extends StatefulWidget {
 
 class _ParentLoginState extends State<ParentLogin> {
   bool _isSigningIn = false;
-  void _googlesignin() async {
-    try {
-      final auth = Provider.of<AuthService>(context, listen: false);
-      final User user = await auth.signInWithGoogle();
-      print('${user.uid}');
-    } catch (e) {
-      print(e);
-    }
-    Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (context) => ParentHomePage()),
-        (Route<dynamic> route) => false);
-  }
+  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   Widget circularLoadingIndicator() =>
-      Center(child: circularLoadingIndicator());
+      Center(child: CircularProgressIndicator());
+
   final GoogleSignIn googleSignIn = GoogleSignIn();
   Widget build(BuildContext context) {
+    showAlertDialog(BuildContext context) {
+      // set up the button
+      Widget okButton = FlatButton(
+        child: Text("OK"),
+        onPressed: () {
+          Navigator.of(context).pop();
+        },
+      );
+
+      // set up the AlertDialog
+      AlertDialog alert = AlertDialog(
+        title: Text("Sign In Error"),
+        content: Text("Failed to sign in, Please try again."),
+        actions: [
+          okButton,
+        ],
+      );
+
+      // show the dialog
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return alert;
+        },
+      );
+    }
+
+    void _googlesignin() async {
+      final auth = Provider.of<AuthService>(context, listen: false);
+      final database = Provider.of<DataBaseService>(context, listen: false);
+      try {
+        final User user = await auth.signInWithGoogle();
+        if (user != null) {
+          print('${user.uid}');
+          Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(builder: (context) => ParentHomePage()),
+              (Route<dynamic> route) => false);
+          database.printData(database.getUserDoc());
+        } else {
+          showAlertDialog(context);
+        }
+      } catch (e) {
+        print(e);
+        showAlertDialog(context);
+      }
+    }
+
     Widget _cancelCrossButton() {
       return ListTile(
         leading: IconButton(
@@ -280,26 +318,8 @@ class _ParentLoginState extends State<ParentLogin> {
     }
 
     return Scaffold(
-      body: _isSigningIn
-          ? Center(child: CircularProgressIndicator())
-          : _signUpScreen(),
+      key: _scaffoldKey,
+      body: _isSigningIn ? circularLoadingIndicator() : _signUpScreen(),
     );
-  }
-
-  Future<String> signInWithGoogle() async {
-    _isSigningIn = true;
-    final user = await googleSignIn.signIn();
-    if (user == null) {
-      return "Cannot login";
-    } else {
-      final googleAuth = await user.authentication;
-
-      final credential = GoogleAuthProvider.credential(
-          accessToken: googleAuth.accessToken, idToken: googleAuth.idToken);
-
-      await FirebaseAuth.instance.signInWithCredential(credential);
-      _isSigningIn = false;
-      return user.displayName;
-    }
   }
 }

@@ -1,3 +1,5 @@
+import 'package:easytalk/services/firebase/databaseservice.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -14,8 +16,12 @@ void main() async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Provider<AuthService>(
-        create: (_) => AuthService(),
+    return MultiProvider(
+        providers: [
+          Provider<AuthService>(
+            create: (_) => AuthService(),
+          ),
+        ],
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
           title: 'TODO app',
@@ -37,7 +43,22 @@ class AuthWidget extends StatelessWidget {
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.active) {
           final user = snapshot.data;
-          return user != null ? ParentHomePage() : MainLoginScreen();
+          if (user != null) {
+            return MultiProvider(
+              providers: [
+                Provider<DataBaseService>(
+                  create: (_) => DataBaseService(uid: user.uid),
+                ),
+              ],
+              child: Provider<User>.value(
+                value: user,
+                child: ParentHomePage(),
+              ),
+            );
+          }
+          return MainLoginScreen();
+        } else if (snapshot.connectionState == ConnectionState.none) {
+          return MainLoginScreen();
         }
         return Scaffold(body: Center(child: CircularProgressIndicator()));
       },

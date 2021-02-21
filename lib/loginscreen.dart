@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:easytalk/homepage.dart';
 import 'package:easytalk/services/firebase/databaseservice.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -216,7 +217,7 @@ class _ParentLoginState extends State<ParentLogin> {
 
       // show the dialog
       showDialog(
-        context: context,
+        context: _scaffoldKey.currentContext,
         builder: (BuildContext context) {
           return alert;
         },
@@ -225,15 +226,12 @@ class _ParentLoginState extends State<ParentLogin> {
 
     void _googlesignin() async {
       final auth = Provider.of<AuthService>(context, listen: false);
-      final database = Provider.of<DataBaseService>(context, listen: false);
       try {
         final User user = await auth.signInWithGoogle();
         if (user != null) {
-          print('${user.uid}');
-          Navigator.of(context).pushAndRemoveUntil(
-              MaterialPageRoute(builder: (context) => ParentHomePage()),
-              (Route<dynamic> route) => false);
-          database.printData(database.getUserDoc());
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => Homepage()),
+          );
         } else {
           showAlertDialog(context);
         }

@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 class AuthService {
   bool ischild = false;
-  bool isparent = true;
+  bool isparent = false;
   final _firebaseAuth = FirebaseAuth.instance;
   User user;
   final GoogleSignIn googleSignIn = GoogleSignIn();

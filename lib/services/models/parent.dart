@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easytalk/services/models/child.dart';
 import 'package:easytalk/services/firebase/databaseservice.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 
 class Parent {
   String photourl;
@@ -12,7 +13,7 @@ class Parent {
   String email;
   List<Child> children = List<Child>();
 
-  Parent(String uid) : this.uid = uid;
+  Parent({@required this.uid});
   Parent.fromSnapshot(DocumentSnapshot snapshot) {
     _fromJson(snapshot.data());
   }

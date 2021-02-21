@@ -331,8 +331,6 @@ class _DependentFormState extends State<DependentForm> {
                 FlatButton(
                   child: Text("Yes"),
                   onPressed: () async {
-                    await dbase.parent.createNewChild(
-                        _nameController.text, _passcodeController.text);
                     Navigator.of(_scaffoldKey.currentContext).pop();
                     _scaffoldKey.currentState.showSnackBar(snackBarAdd);
                     //TODO:serverside

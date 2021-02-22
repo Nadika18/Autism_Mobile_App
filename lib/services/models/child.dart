@@ -6,7 +6,6 @@ class Child {
   String name;
   String photourl;
   String regCode;
-  String password;
   List<Task> tasks = List<Task>();
 
   Child(String uid) : this.uid = uid;

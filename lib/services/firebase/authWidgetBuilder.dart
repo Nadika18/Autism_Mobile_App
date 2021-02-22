@@ -22,8 +22,8 @@ class AuthWidgetBuilder extends StatelessWidget {
           return MultiProvider(
             providers: [
               Provider<User>.value(value: user),
-              Provider<DataBaseService>(
-                create: (_) => DataBaseService(uid: user.uid),
+              Provider<ParentDataBaseService>(
+                create: (_) => ParentDataBaseService(),
               ),
             ],
             child: builder(context, snapshot),

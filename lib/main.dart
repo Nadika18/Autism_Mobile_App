@@ -9,6 +9,7 @@ import 'package:easytalk/services/firebase/authservice.dart';
 import 'package:easytalk/loginscreen.dart';
 import 'package:easytalk/parent/parentHomepage.dart';
 
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();

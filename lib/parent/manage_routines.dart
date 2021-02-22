@@ -1,5 +1,8 @@
 import "package:flutter/material.dart";
 
+
+enum taskName{ DO,}
+
 class ManageRoutine extends StatefulWidget {
   @override
   _ManageRoutineState createState() => _ManageRoutineState();
@@ -7,6 +10,12 @@ class ManageRoutine extends StatefulWidget {
 
 class _ManageRoutineState extends State<ManageRoutine> {
   @override
+
+  TabController controller;
+
+
+
+
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -20,9 +29,14 @@ class _ManageRoutineState extends State<ManageRoutine> {
           title: Text(
             "Task View",
             style: TextStyle(color: Colors.black),
-          )),
+          ),
+          bottom: new TabBar(tabs: null),
+          ),
       body: SingleChildScrollView(
-        
+       child:Container(
+         padding: EdgeInsets.all(10),
+
+       ) 
         
       ),
     );}

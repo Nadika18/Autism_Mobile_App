@@ -235,7 +235,69 @@ class _DependentFormState extends State<DependentForm> {
   TextEditingController _passcodeController = TextEditingController();
   String uid;
   final title = "Create a new dependent";
+  void _confirmAddDialog() {
+    var dbase = Provider.of<ParentDataBaseService>(context, listen: false);
+    final snackBarAdd = SnackBar(
+      content: Text('Adding the dependent..... Please Wait'),
+      duration: Duration(milliseconds: 1000),
+    );
+    final snackBarAllocated = SnackBar(
+      content: Text('Registration Code allocated please use another'),
+      duration: Duration(milliseconds: 1000),
+    );
+    final snackBarSuccess = SnackBar(
+      content: Text('Dependent added.'),
+      duration: Duration(milliseconds: 1000),
+    );
+    final snackBarCancel = SnackBar(
+      content: Text('Cancelled.....'),
+      duration: Duration(milliseconds: 500),
+    );
+    showDialog(
+        context: _scaffoldKey.currentContext,
+        child: AlertDialog(
+          contentPadding: EdgeInsets.all(15),
+          title: Text("Are you sure you want to add dependent?"),
+          actions: [
+            Text(
+                "This registration code will be occupied for your child if it is available and you cannot modify it."),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                FlatButton(
+                  child: Text("Cancel"),
+                  onPressed: () {
+                    Navigator.of(_scaffoldKey.currentContext).pop();
+                    _scaffoldKey.currentState.showSnackBar(snackBarCancel);
+                  },
+                ),
+                FlatButton(
+                  child: Text("Yes"),
+                  onPressed: () async {
+                    _scaffoldKey.currentState.showSnackBar(snackBarAdd);
+                    var exists = await dbase
+                        .checkDependentExists(_regcodeController.text);
+                    if (!exists) {
+                      dbase
+                          .addDependent(
+                              _nameController.text, _regcodeController.text)
+                          .then((_) => _scaffoldKey.currentState
+                              .showSnackBar(snackBarSuccess))
+                          .catchError((e) => print(e));
+                    } else {
+                      _scaffoldKey.currentState.showSnackBar(snackBarAllocated);
+                    }
+                    ;
+                    Navigator.of(_scaffoldKey.currentContext).pop();
+                  },
+                )
+              ],
+            )
+          ],
+        ));
+  }
 
+  @override
   Widget _buildInputName() {
     return Container(
         child: Column(children: [
@@ -277,70 +339,9 @@ class _DependentFormState extends State<DependentForm> {
     ]));
   }
 
-  Widget _buildInputPasscode() {
-    return Container(
-        child: Column(children: [
-      Text("Enter Passcode(4-digit)"),
-      TextFormField(
-        controller: _passcodeController,
-        keyboardType: TextInputType.number,
-        validator: (value) {
-          if (!value.isNotEmpty) {
-            return "enter a passcode";
-          }
-          int intval = int.parse(value) ~/ 1000;
-          if ((intval < 1) || (intval > 10)) {
-            print(intval);
-            return "enter a 4 digit passcode";
-          }
-          return null;
-        },
-      ),
-    ]));
-  }
-
-  void _confirmAddDialog() {
-    var dbase = Provider.of<DataBaseService>(_scaffoldKey.currentContext,
-        listen: false);
-    final snackBarAdd = SnackBar(
-      content: Text('Adding the dependent..... Please Wait'),
-      duration: Duration(milliseconds: 1000),
-    );
-    final snackBarCancel = SnackBar(
-      content: Text('Cancelled.....'),
-      duration: Duration(milliseconds: 500),
-    );
-    showDialog(
-        context: _scaffoldKey.currentContext,
-        child: AlertDialog(
-          contentPadding: EdgeInsets.all(15),
-          title: Text("Are you sure you want to add dependent?"),
-          actions: [
-            Text(
-                "This registration code will be occupied for your child if it is available and you cannot modify it."),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                FlatButton(
-                  child: Text("Cancel"),
-                  onPressed: () {
-                    Navigator.of(_scaffoldKey.currentContext).pop();
-                    _scaffoldKey.currentState.showSnackBar(snackBarCancel);
-                  },
-                ),
-                FlatButton(
-                  child: Text("Yes"),
-                  onPressed: () async {
-                    Navigator.of(_scaffoldKey.currentContext).pop();
-                    _scaffoldKey.currentState.showSnackBar(snackBarAdd);
-                    //TODO:serverside
-                    //variables already available
-                  },
-                )
-              ],
-            )
-          ],
-        ));
+  void snack(String text, Duration dur) {
+    Scaffold.of(context)
+        .showSnackBar(SnackBar(content: Text(text), duration: dur));
   }
 
   Widget _submitForm() {
@@ -364,17 +365,11 @@ class _DependentFormState extends State<DependentForm> {
       key: _formKey,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          _buildInputName(),
-          _buildInputRegCode(),
-          _buildInputPasscode(),
-          _submitForm()
-        ],
+        children: [_buildInputName(), _buildInputRegCode(), _submitForm()],
       ),
     );
   }
 
-  @override
   Widget build(BuildContext context) {
     var appBar = AppBar(
         backgroundColor: Colors.white,

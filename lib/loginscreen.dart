@@ -197,7 +197,7 @@ class _ParentLoginState extends State<ParentLogin> {
 
   final GoogleSignIn googleSignIn = GoogleSignIn();
   Widget build(BuildContext context) {
-    showAlertDialog(BuildContext context) {
+    showAlertDialog() {
       // set up the button
       Widget okButton = FlatButton(
         child: Text("OK"),
@@ -232,12 +232,13 @@ class _ParentLoginState extends State<ParentLogin> {
           Navigator.of(context).pushReplacement(
             MaterialPageRoute(builder: (context) => Homepage()),
           );
-        } else {
-          showAlertDialog(context);
+        }
+        if (user == null) {
+          showAlertDialog();
         }
       } catch (e) {
         print(e);
-        showAlertDialog(context);
+        showAlertDialog();
       }
     }
 

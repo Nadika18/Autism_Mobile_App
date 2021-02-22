@@ -4,10 +4,10 @@ import 'package:easytalk/parent/questionsFromParents.dart';
 import 'package:easytalk/parent/taskview.dart';
 import 'package:easytalk/services/firebase/databaseservice.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:easytalk/services/firebase/authservice.dart';
-import 'package:easytalk/parent/forms.dart';
 import 'package:easytalk/loginscreen.dart';
 import 'package:easytalk/child/childPecs.dart';
 import 'package:easytalk/utils/customWidgets.dart';
@@ -115,12 +115,6 @@ class _ParentHomePageState extends State<ParentHomePage> {
     );
   }
 
-  void krish() async {
-    var database = Provider.of<DataBaseService>(_scaffoldKey.currentContext,
-        listen: false);
-    database.printData(database.getUserDoc());
-  }
-
   void navigateDependents() {
     Navigator.push(_scaffoldKey.currentContext,
         MaterialPageRoute(builder: (context) => Dependents()));
@@ -136,7 +130,7 @@ class _ParentHomePageState extends State<ParentHomePage> {
       crossAxisCount: 2,
       childAspectRatio: (size.width / 2) / (size.height / 5),
       children: [
-        _buildGridItem("Manage Routine", Icons.calendar_today, krish),
+        _buildGridItem("Manage Routine", Icons.calendar_today, null),
         _buildGridItem(
             "Dependents", Icons.perm_identity_rounded, navigateDependents),
         _buildGridItem("Tasks", Icons.pending_actions, navigateTaskView),

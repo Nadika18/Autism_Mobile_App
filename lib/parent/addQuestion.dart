@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 //This is for my own purpose. Don't use this code.-Nadika
 class AddQuestion extends StatefulWidget {
-
   final String quizId;
   AddQuestion(this.quizId);
 
@@ -11,7 +10,6 @@ class AddQuestion extends StatefulWidget {
 }
 
 class _AddQuestionState extends State<AddQuestion> {
-  
   final _formKey = GlobalKey<FormState>();
 
   bool isLoading = false;
@@ -19,9 +17,7 @@ class _AddQuestionState extends State<AddQuestion> {
   String question = "", option1 = "", option2 = "", option3 = "", option4 = "";
 
   uploadQuizData() {
-
     if (_formKey.currentState.validate()) {
-
       setState(() {
         isLoading = true;
       });
@@ -35,22 +31,7 @@ class _AddQuestionState extends State<AddQuestion> {
       };
 
       print("${widget.quizId}");
-      databaseService.addQuestionData(questionMap, widget.quizId).then((value) {
-        question = "";
-        option1 = "";
-        option2 = "";
-        option3 = "";
-        option4 = "";
-        setState(() {
-          isLoading = false;
-        });
-
-      }).catchError((e){
-        print(e);
-      });
-
-
-    }else{
+    } else {
       print("error is happening ");
     }
   }
@@ -58,7 +39,6 @@ class _AddQuestionState extends State<AddQuestion> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      
       body: isLoading
           ? Container(
               child: Center(child: CircularProgressIndicator()),
@@ -93,8 +73,8 @@ class _AddQuestionState extends State<AddQuestion> {
                     TextFormField(
                       validator: (val) => val.isEmpty ? "Option2 " : null,
                       decoration: InputDecoration(hintText: "Option2"),
-                      onChanged: (val){
-                       option2 = val;
+                      onChanged: (val) {
+                        option2 = val;
                       },
                     ),
                     SizedBox(
@@ -103,9 +83,8 @@ class _AddQuestionState extends State<AddQuestion> {
                     TextFormField(
                       validator: (val) => val.isEmpty ? "Option3 " : null,
                       decoration: InputDecoration(hintText: "Option3"),
-                      onChanged: (val){
+                      onChanged: (val) {
                         option3 = val;
-
                       },
                     ),
                     SizedBox(
@@ -114,7 +93,7 @@ class _AddQuestionState extends State<AddQuestion> {
                     TextFormField(
                       validator: (val) => val.isEmpty ? "Option4 " : null,
                       decoration: InputDecoration(hintText: "Option4"),
-                      onChanged: (val){
+                      onChanged: (val) {
                         option4 = val;
                       },
                     ),
@@ -126,9 +105,7 @@ class _AddQuestionState extends State<AddQuestion> {
                       children: [
                         GestureDetector(
                           onTap: () {
-
-                           Navigator.pop(context);
-
+                            Navigator.pop(context);
                           },
                           child: Container(
                             alignment: Alignment.center,

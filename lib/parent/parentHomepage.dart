@@ -1,8 +1,6 @@
 import 'package:easytalk/parent/createQuestions.dart';
 import 'package:easytalk/parent/dependents.dart';
-import 'package:easytalk/parent/questionsFromParents.dart';
 import 'package:easytalk/parent/taskview.dart';
-import 'package:easytalk/services/firebase/databaseservice.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';

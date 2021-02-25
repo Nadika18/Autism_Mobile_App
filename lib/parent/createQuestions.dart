@@ -132,7 +132,9 @@ class _CreateQuestionState extends State<CreateQuestion> {
         leading: IconButton(
           icon:Icon(Icons.keyboard_arrow_left_sharp , 
           color: Colors.black, size: 45), 
-        onPressed: (){}), 
+        onPressed: (){
+            Navigator.of(context).pop();
+        }),
         backgroundColor: Colors.white, 
         title: Text("Questions", style: TextStyle(color: Colors.black),),),
       body: Container(

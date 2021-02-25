@@ -6,14 +6,8 @@ List<DateTime> dateTime = [DateTime.parse("2020-12-01")];
 List<bool> completed = [false];
 
 class Task {
-  Task(
-      {this.uid,
-      this.name,
-      this.description,
-      this.datetime,
-      this.completed = false});
+  Task({this.name, this.description, this.datetime, this.completed = false});
 
-  String uid;
   String name;
   String description;
   DateTime datetime;
@@ -29,7 +23,6 @@ class Task {
   }
 
   _fromJson(Map<String, dynamic> json) {
-    uid = json["uid"];
     description = json["description"];
     name = json["name"];
     photourl = json["photourl"];

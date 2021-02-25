@@ -1,7 +1,7 @@
 import 'package:easytalk/child/childHomepage.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_tts/flutter_tts.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // ignore: camel_case_types
 class IWant extends StatefulWidget {
@@ -15,20 +15,22 @@ class _IWantState extends State<IWant> {
     String _text = text;
     String _path = path;
     return Container(
-        child: new Card(
-      elevation: 10,
-      child: Column(
-        children: [
-          Image(image: AssetImage(_path), height: 130, width: 130),
-          TextButton(
-              child: Text(_text,
-                  style: TextStyle(fontSize: 20, color: Colors.black)),
-              onPressed: () {
-                speak("I want" + _text);
-              }),
-        ],
-      ),
-    ));
+      child: InkWell(
+          child: new Card(
+            elevation: 10,
+            child: Column(
+              children: [
+                Image(image: AssetImage(_path), height: 130, width: 130),
+                Text(_text,
+                    style: TextStyle(fontSize: 20, color: Colors.black)),
+              ],
+            ),
+          ),
+          onTap: () {
+            speak("I want " + _text);
+            print("I want" + _text);
+          }),
+    );
   }
 
   @override

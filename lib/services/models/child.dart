@@ -30,9 +30,9 @@ class Child {
 
   int getNoOfTask() => tasks.length;
 
-  void completedTask(String id) {
+  void completedTask(DateTime dtime) {
     for (var task in tasks) {
-      if (task.uid == id) {
+      if (task.datetime == dtime) {
         task.toogleCompleted();
         //TODO: server side
       }

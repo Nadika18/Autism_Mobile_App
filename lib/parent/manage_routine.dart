@@ -88,10 +88,7 @@ Widget gridView(String taskName, String imagepath, String time, String stars){
              gridView(taskName, imagepath, time,stars),
               gridView(taskName, imagepath, time,stars),
                gridView(taskName, imagepath, time,stars),
-
-           
-
-        ]
+               ]
         ,)
     );}
 }

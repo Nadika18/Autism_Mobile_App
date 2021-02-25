@@ -147,7 +147,7 @@ class _ParentHomePageState extends State<ParentHomePage> {
 
   void navigateReports(){
     Navigator.push(_scaffoldKey.currentContext,
-        MaterialPageRoute(builder: (context) => Feelings()));
+        MaterialPageRoute(builder: (context) => ChildHomePage()));
   }
 
   Widget _buildGridView(Size size) {

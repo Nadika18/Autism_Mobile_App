@@ -1,3 +1,5 @@
+import 'package:easytalk/child/childTaskView.dart';
+import 'package:easytalk/child/feelings.dart';
 import 'package:flutter/material.dart';
 import 'package:easytalk/utils/customWidgets.dart';
 import 'package:easytalk/parent/forms.dart';
@@ -26,6 +28,7 @@ class ChildHomePage extends StatefulWidget {
 }
 
 class _ChildHomePageState extends State<ChildHomePage> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   String name, gender;
   int age, tasks, remainingTasks;
 
@@ -151,8 +154,8 @@ class _ChildHomePageState extends State<ChildHomePage> {
         ]),
       ),
       onTap: () {
-        print("tapped");
-        //works okay
+        Navigator.of(_scaffoldKey.currentContext).push(
+              MaterialPageRoute(builder: (_)=> ChildTaskView(uid: 'nadss')));
       },
     );
   }
@@ -232,11 +235,6 @@ class _ChildHomePageState extends State<ChildHomePage> {
                     IconButton(
                       icon: Icon(Icons.remove_circle_outline),
                       onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => TaskForm(uid: name),
-                            )).then((value) => setState(() {}));
                       },
                     ),
                     IconButton(
@@ -253,12 +251,17 @@ class _ChildHomePageState extends State<ChildHomePage> {
     );
   }
 
-  Widget _feelings() {
+  Widget _feelings( ) {
     return Container(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          IconButton(icon: Icon(Icons.mood, size: 50), onPressed: () {}),
+          IconButton(icon: Icon(Icons.mood, size: 50), onPressed: () {
+            Navigator.of(_scaffoldKey.currentContext).push(
+              MaterialPageRoute(builder: (_)=> Feelings())
+
+            );
+          }),
           Text("How are you feeling", style: TextStyle(fontSize: 20))
         ],
       ),
@@ -305,6 +308,7 @@ class _ChildHomePageState extends State<ChildHomePage> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
+      key: _scaffoldKey,
         drawer: Drawer(
             child: ListView(
           children: [

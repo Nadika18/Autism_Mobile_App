@@ -20,7 +20,7 @@ class _IAmState extends State<Feelings> {
             title: CloseButton(
                 color: Colors.white,
                 onPressed: () {
-                  ChildHomePage();
+                  Navigator.pop(context);
                 }),
             centerTitle: true,
           )),

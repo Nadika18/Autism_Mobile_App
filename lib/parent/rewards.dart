@@ -26,7 +26,7 @@ class _RewardsState extends State<Rewards> {
 }
 Widget gridView(){
   return GridView.count(crossAxisCount: 2,
-  children: [task("Apple",'assets/apple.jpg',"5 pm",star1),task("Cake","assets/cake.jpg","6 pm",star2)],
+  children: [task("Apple",'assets/apple.jpg',"5 pm",star1),task("Cake","assets/cake.jpg","6 pm",star2), Button()],
   );
 }
 
@@ -43,7 +43,22 @@ Widget gridView(){
               }),
           title: Text("Rewards", style:TextStyle(color: Colors.black) ,)
     ),
-    body: gridView());
+    body: gridView(),
+    );
     
+  }
+}
+class Button extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: Alignment.bottomRight,
+      child: IconButton(
+        onPressed: () {},
+        icon: Icon(Icons.plus_one_rounded),
+        color: Colors.blue,
+        
+      ),
+    );
   }
 }

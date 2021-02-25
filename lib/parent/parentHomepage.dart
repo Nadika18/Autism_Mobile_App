@@ -13,6 +13,7 @@ import 'package:easytalk/loginscreen.dart';
 import 'package:easytalk/child/childPecs.dart';
 import 'package:easytalk/utils/customWidgets.dart';
 import "package:easytalk/parent/manage_routine.dart";
+import 'package:easytalk/parent/questionsFromParents.dart';
 
 class ParentHomePage extends StatefulWidget {
   ParentHomePage({Key key}) : super(key: key);
@@ -136,6 +137,11 @@ class _ParentHomePageState extends State<ParentHomePage> {
         MaterialPageRoute(builder: (context) => Rewards()));
   }
 
+  void navigateTutorials(){
+    Navigator.push(_scaffoldKey.currentContext,
+        MaterialPageRoute(builder: (context) => QuestionsByParents()));
+  }
+
   Widget _buildGridView(Size size) {
     return GridView.count(
       crossAxisCount: 2,
@@ -148,7 +154,7 @@ class _ParentHomePageState extends State<ParentHomePage> {
         _buildGridItem("Reports", Icons.library_books_outlined, null),
         _buildGridItem("Rewards", Icons.auto_awesome, navigateRewards),
         _buildGridItem("PECS", Icons.picture_in_picture_sharp, navigatePecs),
-        _buildGridItem("Tutorials", Icons.assignment_turned_in_outlined, null),
+        _buildGridItem("Tutorials", Icons.assignment_turned_in_outlined, navigateTutorials),
         _buildGridItem(
             "Questions", Icons.question_answer_sharp, navigateQuestions),
       ],

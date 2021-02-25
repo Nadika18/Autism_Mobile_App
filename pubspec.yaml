@@ -36,6 +36,7 @@ dependencies:
   quiz_view: ^1.0.3
   rflutter_alert: ^1.1.0
   image_picker: ^0.6.7+22
+  shared_preferences: ^0.5.12+4
 
 dev_dependencies:
   flutter_test:

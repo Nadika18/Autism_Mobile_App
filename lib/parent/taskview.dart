@@ -21,16 +21,17 @@ class _TaskViewState extends State<TaskView> {
   @override
   Widget build(BuildContext context) {
     Widget _buildTaskListItem(int index) {
-      return ListTile(
+      return Card(margin:EdgeInsets.all(8),
+      child: ListTile(
           leading: Text((index + 1).toString()),
-          title: Text(todoName[index]),
+          title: Text(todoName[index], style: TextStyle( fontSize: 18)),
           subtitle: Text(todoDesp[index]),
           trailing: FlatButton(
             child: Icon(Icons.delete),
             onPressed: () {
               setState(() {});
             },
-          ));
+          )));
     }
 
     Widget _buildTaskList() {

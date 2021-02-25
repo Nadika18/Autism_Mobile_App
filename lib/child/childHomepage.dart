@@ -3,6 +3,8 @@ import 'package:easytalk/utils/customWidgets.dart';
 import 'package:easytalk/parent/forms.dart';
 import 'package:easytalk/services/models/tasks.dart';
 import 'package:flutter_tts/flutter_tts.dart';
+import 'package:easytalk/child/image.dart';
+
 
 FlutterTts flutterTts = FlutterTts();
 speak(String text) async {

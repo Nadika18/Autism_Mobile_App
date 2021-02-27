@@ -13,7 +13,16 @@ class Task {
   DateTime datetime;
   String photourl;
   bool completed;
-
+  toJson(){
+    var tstamp = Timestamp.fromDate(datetime);
+    return {
+      "name":name,
+      "description":description,
+      "timestamp": tstamp,
+      "photourl":photourl,
+      "completed":completed
+    };
+  }
   Task.fromSnapshot(DocumentSnapshot snapshot) {
     _fromJson(snapshot.data());
   }

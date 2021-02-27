@@ -1,6 +1,5 @@
 import 'dart:ui';
 import 'package:easytalk/homepage.dart';
-import 'package:easytalk/services/firebase/databaseservice.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/foundation.dart';
@@ -9,7 +8,6 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:easytalk/services/firebase/authservice.dart';
-import 'package:easytalk/parent/parentHomepage.dart';
 
 class MainLoginScreen extends StatefulWidget {
   @override
@@ -140,11 +138,13 @@ class _MainLoginScreenState extends State<MainLoginScreen> {
 
   Widget _bottomParentLoginLinker() {
     return Card(
-        elevation: 20,
+        elevation: 40,
+        shadowColor: Colors.white54,
+        color: Colors.white,
         margin: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
         child: Center(
           child: TextButton(
-            child: Text("Parent Login"),
+            child: Text("Parent Login",style: TextStyle(fontWeight: FontWeight.w600,fontSize: 20),),
             onPressed: () {
               Navigator.push(context,
                   MaterialPageRoute(builder: (context) => ParentLogin()));
@@ -167,6 +167,7 @@ class _MainLoginScreenState extends State<MainLoginScreen> {
           },
           child: Scaffold(
             key: _scaffoldKey,
+            backgroundColor: Colors.white,
             body: SingleChildScrollView(
                 child: Container(
                     height: constraints.maxHeight,
@@ -238,7 +239,6 @@ class _ParentLoginState extends State<ParentLogin> {
         }
       } catch (e) {
         print(e);
-        showAlertDialog();
       }
     }
 

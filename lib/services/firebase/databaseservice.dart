@@ -43,11 +43,17 @@ class ParentDataBaseService {
     print(snap.data());
   }
 
-  Future<void> addTask(String regCode) {}
+  Future<void> addTask(Task task,String regCode) async {
+    var ref = _firestore.collection("tasks").doc(user.uid);
+    var childref = ref.collection(regCode).doc();
+    return childref.set(task.toJson());
+  }
+
   Future<void> addDependent(String name, String regCode) async {
     var ref = _firestore.collection("children").doc(regCode);
-    Map<String, dynamic> child = {"name": name, "regCode": regCode};
-    Map<String, dynamic> data = {"children": child};
+    Map<String, dynamic> data = { "parentuid" : user.uid};
+    Map<String, dynamic> child = { "name" : name, "regCode": regCode};
+    data.addAll(child);
     var check = await checkDependentExists(regCode);
     if (!check) {
       return ref.set(data);
@@ -57,6 +63,8 @@ class ParentDataBaseService {
 }
 
 class ChildDataBaseService {
+  String regCode;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  Future<bool> markCompleted(Task task) {}
+  Future<List<Task>> getTaskData(String regCode){
+  }
 }

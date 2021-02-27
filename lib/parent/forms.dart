@@ -53,6 +53,8 @@ class _TaskFormState extends State<TaskForm> {
     if (date != null) {
       setState(() {
         taskDate = date;
+        taskDate = new DateTime(taskDate.year, taskDate.month, taskDate.day,
+            taskTime.hour, taskTime.minute);
       });
       _scaffoldKey.currentState.showSnackBar(
           snackbar("Date Selected", Duration(milliseconds: 1000)));
@@ -70,9 +72,11 @@ class _TaskFormState extends State<TaskForm> {
     if (time != null) {
       setState(() {
         taskTime = time;
+        taskDate = new DateTime(taskDate.year, taskDate.month, taskDate.day,
+            taskTime.hour, taskTime.minute);
       });
       _scaffoldKey.currentState.showSnackBar(
-          snackbar("Date Selected", Duration(milliseconds: 1000)));
+          snackbar("Time Selected", Duration(milliseconds: 1000)));
     } else {
       _scaffoldKey.currentState
           .showSnackBar(snackbar("Cancelled", Duration(milliseconds: 500)));
@@ -82,7 +86,9 @@ class _TaskFormState extends State<TaskForm> {
   Widget _buildInputName() {
     return Container(
         child: Column(children: [
-      Align(alignment: Alignment.centerLeft ,child:Text("Enter the task", style: TextStyle(fontSize:18 ))),
+      Align(
+          alignment: Alignment.centerLeft,
+          child: Text("Enter the task", style: TextStyle(fontSize: 18))),
       TextFormField(
         textInputAction: TextInputAction.next,
         autofocus: true,
@@ -100,7 +106,10 @@ class _TaskFormState extends State<TaskForm> {
   Widget _buildInputDespcription() {
     return Container(
         child: Column(children: [
-      Align(alignment: Alignment.centerLeft ,child:Text("Enter task Despcription.",style: TextStyle(fontSize:18 ))),
+      Align(
+          alignment: Alignment.centerLeft,
+          child:
+              Text("Enter task Despcription.", style: TextStyle(fontSize: 18))),
       TextFormField(
         validator: (value) {
           if (value.isEmpty) {
@@ -115,10 +124,13 @@ class _TaskFormState extends State<TaskForm> {
 
   Widget _buildInputDate() {
     return Container(
-        child: Column(children: [Align(alignment: Alignment.centerLeft ,child:
-      Text("Date", style: TextStyle(fontSize:18 ))),
+        child: Column(children: [
+      Align(
+          alignment: Alignment.centerLeft,
+          child: Text("Date", style: TextStyle(fontSize: 18))),
       ListTile(
-          title: Text("${taskDate.year}-${taskDate.month}-${taskDate.day}",style: TextStyle(fontSize:18 )),
+          title: Text("${taskDate.year}-${taskDate.month}-${taskDate.day}",
+              style: TextStyle(fontSize: 18)),
           onTap: _pickDate,
           trailing: Icon(Icons.keyboard_arrow_down))
     ]));
@@ -127,10 +139,12 @@ class _TaskFormState extends State<TaskForm> {
   Widget _buildInputTime() {
     return Container(
         child: Column(children: [
-          Align(alignment: Alignment.centerLeft ,child:
-      Text("Time", style: TextStyle(fontSize:18))),
+      Align(
+          alignment: Alignment.centerLeft,
+          child: Text("Time", style: TextStyle(fontSize: 18))),
       ListTile(
-          title: Text("${taskTime.hour}-${taskTime.minute}", style: TextStyle(fontSize:18 )),
+          title: Text("${taskTime.hour}-${taskTime.minute}",
+              style: TextStyle(fontSize: 18)),
           onTap: _pickTime,
           trailing: Icon(Icons.keyboard_arrow_down))
     ]));
@@ -139,8 +153,7 @@ class _TaskFormState extends State<TaskForm> {
   Widget _buildInputCompletion() {
     return Container(
         child: Column(children: [
-          
-      Text("Mark as completed?",style: TextStyle(fontSize:18 )),
+      Text("Mark as completed?", style: TextStyle(fontSize: 18)),
       ButtonBar(
         alignment: MainAxisAlignment.center,
         children: [
@@ -165,19 +178,34 @@ class _TaskFormState extends State<TaskForm> {
   }
 
   Widget _submitForm() {
-    final snackBar = SnackBar(content: Text('Adding the task.....'));
+    SnackBar snackBar(String text,int millisec){
+      return SnackBar(content: Text(text),duration: Duration(milliseconds: millisec));
+    }
     return Container(
       child: Align(
         alignment: Alignment.centerRight,
         child: RaisedButton(
-          child: Text('+ Add Task', style: TextStyle(fontSize:18 )),
+          child: Text('+ Add Task', style: TextStyle(fontSize: 18)),
           onPressed: () {
             if (_formKey.currentState.validate()) {
-              _scaffoldKey.currentState.showSnackBar(snackBar);
-
+                    _scaffoldKey.currentState.showSnackBar(snackBar("Adding the task.... Please Wait",1000));
+              var newtask = Task(
+                  name: taskName,
+                  description: taskDescription,
+                  datetime: taskDate,
+                  completed: selected);
+              var dbase = Provider.of<ParentDataBaseService>(
+                  _scaffoldKey.currentContext,
+                  listen: false);
+              dbase.addTask(newtask, uid).then(
+                  (value) {
+                    _scaffoldKey.currentState.showSnackBar(snackBar("Task added succesfully!",500));
+                    Future.delayed(const Duration(seconds: 2),(){
               Navigator.of(_scaffoldKey.currentContext).pop();
-              //serverside
-              //variables already available
+                    });
+                    }).catchError((e){
+                    _scaffoldKey.currentState.showSnackBar(snackBar("Error: Couldn't add task.",1000));
+                    });
             }
           },
         ),
@@ -187,25 +215,25 @@ class _TaskFormState extends State<TaskForm> {
 
   Widget _buildForm() {
     return Form(
-      key: _formKey,
-      child: Container(child: ListView(
-        padding:EdgeInsets.all(10) ,
-        
-        children: [
-          _buildInputName(),
-          Divider(color: Colors.white,thickness: 15),
-          _buildInputDespcription(),
-          Divider(color: Colors.white,thickness: 15),
-          _buildInputDate(),
-          Divider(color: Colors.white,thickness: 15),
-          _buildInputTime(),
-          Divider(color: Colors.white,thickness: 15),
-          _buildInputCompletion(),
-          Divider(color: Colors.white,thickness: 15),
-          _submitForm()
-        ],
-      ),
-    ));
+        key: _formKey,
+        child: Container(
+          child: ListView(
+            padding: EdgeInsets.all(10),
+            children: [
+              _buildInputName(),
+              Divider(color: Colors.white, thickness: 15),
+              _buildInputDespcription(),
+              Divider(color: Colors.white, thickness: 15),
+              _buildInputDate(),
+              Divider(color: Colors.white, thickness: 15),
+              _buildInputTime(),
+              Divider(color: Colors.white, thickness: 15),
+              _buildInputCompletion(),
+              Divider(color: Colors.white, thickness: 15),
+              _submitForm()
+            ],
+          ),
+        ));
   }
 
   @override
@@ -236,10 +264,6 @@ class DependentForm extends StatefulWidget {
 }
 
 class _DependentFormState extends State<DependentForm> {
-
-
-
-  
   final _formKey = GlobalKey<FormState>();
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   TextEditingController _nameController = TextEditingController();
@@ -296,6 +320,7 @@ class _DependentFormState extends State<DependentForm> {
                           .then((_) => _scaffoldKey.currentState
                               .showSnackBar(snackBarSuccess))
                           .catchError((e) => print(e));
+                      Navigator.of(_scaffoldKey.currentContext).pop();
                     } else {
                       _scaffoldKey.currentState.showSnackBar(snackBarAllocated);
                     }

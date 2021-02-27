@@ -48,8 +48,9 @@ class _TaskViewState extends State<TaskView> {
                   trailing: IconButton(
                     icon: Icon(Icons.add),
                     onPressed: () {
+                      var regCode = "987654";
                       Navigator.of(context).push(MaterialPageRoute(
-                          builder: (_) => TaskForm(uid: "jfkd")));
+                          builder: (_) => TaskForm(uid: regCode)));
                     },
                   ),
                 ),

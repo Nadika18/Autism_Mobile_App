@@ -6,6 +6,8 @@ import 'package:flutter/cupertino.dart';
 
 class ParentDataBaseService {
   var user = FirebaseAuth.instance.currentUser;
+  List<String> dependentCode = List<String>();
+  List<Child> dependentChild = List<Child>();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   Future<bool> parentDocumentExists(String id) async {
@@ -32,6 +34,17 @@ class ParentDataBaseService {
     return ref.get();
   }
 
+  Future<void> getDependents() async {
+    var ref = _firestore.collection("children").where("parentuid",isEqualTo: user.uid);
+    var dependents = await ref.get();
+    if(dependents != null){
+    dependents.docs.forEach((value){
+      var data = value.data();
+      dependentChild.add(Child.fromJson(data));
+      dependentCode.add(data["regCode"]);
+      });
+    }
+  }
   Future<bool> checkDependentExists(String regCode) async {
     var ref = await _firestore.collection("children").doc(regCode).get();
     return ref.exists;

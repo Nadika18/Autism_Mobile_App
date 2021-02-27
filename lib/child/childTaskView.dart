@@ -13,18 +13,18 @@ class _TaskViewState extends State<ChildTaskView> {
   @override
   Widget build(BuildContext context) {
     List months = [
-      'jan',
-      'feb',
-      'mar',
-      'apr',
-      'may',
-      'jun',
-      'jul',
-      'aug',
-      'sep',
-      'oct',
-      'nov',
-      'dec'
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec'
     ];
     var child = Provider.of<Child>(context, listen: false);
     return Scaffold(

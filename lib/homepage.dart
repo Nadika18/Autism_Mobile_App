@@ -13,6 +13,7 @@ class _HomepageState extends State<Homepage> {
   Widget build(BuildContext context) {
     var dbase = Provider.of<ParentDataBaseService>(context, listen: false);
     dbase.createUserDoc();
+    dbase.getDependents();
     return ParentHomePage();
   }
 }

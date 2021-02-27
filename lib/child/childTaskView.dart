@@ -36,23 +36,10 @@ class _TaskViewState extends State<ChildTaskView> {
 
     Widget _buildTaskList() {
       return Container(
-          height: MediaQuery.of(context).size.height / 2,
           padding: EdgeInsets.all(5),
           child: Card(
               elevation: 10,
               child: Column(children: [
-                ListTile(
-                  leading:
-                      circularImageContainerNoAlign("assets/nadika.jpg", 40),
-                  title: Text("Nadika Poudel"),
-                  trailing: IconButton(
-                    icon: Icon(Icons.add),
-                    onPressed: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (_) => TaskForm(uid: "jfkd")));
-                    },
-                  ),
-                ),
                 Expanded(
                     child: ListView.builder(
                   itemCount: todoName.length,

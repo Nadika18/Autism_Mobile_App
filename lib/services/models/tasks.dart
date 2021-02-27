@@ -35,8 +35,8 @@ class Task {
     description = json["description"];
     name = json["name"];
     photourl = json["photourl"];
-    var timestamp = json["datetime"];
-    datetime = DateTime.parse(timestamp.toDate().toString());
+    Timestamp timestamp = json["datetime"];
+    datetime = timestamp.toDate();
     print(name);
     completed = json["completed"];
   }

@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easytalk/services/models/child.dart';
 import 'package:easytalk/services/models/tasks.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 
 class ParentDataBaseService {
   var user = FirebaseAuth.instance.currentUser;
@@ -49,12 +50,11 @@ class ParentDataBaseService {
     return childref.set(task.toJson());
   }
 
-  Future<void> addDependent(String name, String regCode) async {
-    var ref = _firestore.collection("children").doc(regCode);
+  Future<void> addDependent(Child child) async {
+    var ref = _firestore.collection("children").doc(child.regCode);
     Map<String, dynamic> data = { "parentuid" : user.uid};
-    Map<String, dynamic> child = { "name" : name, "regCode": regCode};
-    data.addAll(child);
-    var check = await checkDependentExists(regCode);
+    data.addAll(child.toJSON());
+    var check = await checkDependentExists(child.regCode);
     if (!check) {
       return ref.set(data);
     }
@@ -64,6 +64,7 @@ class ParentDataBaseService {
 
 class ChildDataBaseService {
   String regCode;
+  ChildDataBaseService({@required this.regCode});
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   Future<List<Task>> getTaskData(String regCode){
   }

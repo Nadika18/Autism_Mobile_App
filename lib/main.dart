@@ -20,9 +20,6 @@ class MyApp extends StatelessWidget {
           Provider<AuthService>(
             create: (_) => AuthService(),
           ),
-          Provider<ChildDataBaseService>(
-            create: (_) => ChildDataBaseService(),
-          )
         ],
         child: AuthWidgetBuilder(
             builder: (context, userSnapshot) => MaterialApp(

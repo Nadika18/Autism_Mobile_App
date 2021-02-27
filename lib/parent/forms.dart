@@ -1,4 +1,5 @@
 import 'package:easytalk/services/firebase/databaseservice.dart';
+import 'package:easytalk/services/models/child.dart';
 import "package:flutter/material.dart";
 import 'package:easytalk/services/models/tasks.dart';
 import 'package:provider/provider.dart';
@@ -267,6 +268,8 @@ class _DependentFormState extends State<DependentForm> {
   final _formKey = GlobalKey<FormState>();
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   TextEditingController _nameController = TextEditingController();
+  TextEditingController _genderController = TextEditingController();
+  TextEditingController _ageController = TextEditingController();
   TextEditingController _regcodeController = TextEditingController();
   TextEditingController _passcodeController = TextEditingController();
   String uid;
@@ -314,9 +317,14 @@ class _DependentFormState extends State<DependentForm> {
                     var exists = await dbase
                         .checkDependentExists(_regcodeController.text);
                     if (!exists) {
+                      var child = Child(
+                        name: _nameController.text,
+                        age: int.parse(_ageController.text),
+                        gender: _genderController.text,
+                        regCode: _regcodeController.text,
+                        photourl: null);
                       dbase
-                          .addDependent(
-                              _nameController.text, _regcodeController.text)
+                          .addDependent(child)
                           .then((_) => _scaffoldKey.currentState
                               .showSnackBar(snackBarSuccess))
                           .catchError((e) => print(e));
@@ -353,6 +361,40 @@ class _DependentFormState extends State<DependentForm> {
     ]));
   }
 
+  Widget _buildInputGender() {
+    return Container(
+        child: Column(children: [
+      Text("Child Gender."),
+      TextFormField(
+        controller: _genderController,
+        textInputAction: TextInputAction.next,
+        validator: (value) {
+          if (value.isEmpty) {
+            return "enter the child gender";
+          }
+          return null;
+        },
+      ),
+    ]));
+  }
+
+  Widget _buildInputAge() {
+    return Container(
+        child: Column(children: [
+      Text("Child Age."),
+      TextFormField(
+        controller: _ageController,
+        keyboardType: TextInputType.number,
+        textInputAction: TextInputAction.next,
+        validator: (value) {
+          if (value.isEmpty) {
+            return "enter the child age";
+          }
+          return null;
+        },
+      ),
+    ]));
+  }
   Widget _buildInputRegCode() {
     return Container(
         child: Column(children: [
@@ -402,7 +444,7 @@ class _DependentFormState extends State<DependentForm> {
       key: _formKey,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [_buildInputName(), _buildInputRegCode(), _submitForm()],
+        children: [_buildInputName(), _buildInputRegCode(),_buildInputAge(),_buildInputGender(), _submitForm()],
       ),
     );
   }

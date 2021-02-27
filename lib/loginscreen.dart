@@ -1,5 +1,8 @@
 import 'dart:ui';
+import 'package:easytalk/child/childHomepage.dart';
 import 'package:easytalk/homepage.dart';
+import 'package:easytalk/services/firebase/databaseservice.dart';
+import 'package:easytalk/services/models/child.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/foundation.dart';
@@ -21,7 +24,26 @@ class _MainLoginScreenState extends State<MainLoginScreen> {
       new TextEditingController();
   //10^(no of digit - 1)
   final int factor = 100000;
-  //sign in with google
+Widget navigateChildHome(value){
+      return MultiProvider(
+        providers: [
+          Provider<Child>(
+            create: (_) => Child.fromJson(value.data()),
+          ),
+          Provider<ChildDataBaseService>(
+            create: (_) =>
+                ChildDataBaseService(regCode: value.data()["regCode"]),
+          )
+        ],
+        child: ChildHomePage(),
+      );
+}
+  Future login() {
+    FocusScope.of(_scaffoldKey.currentContext).unfocus();
+    var auth =
+        Provider.of<AuthService>(_scaffoldKey.currentContext, listen: false);
+    return auth.childSignIn(_registrationController.text);  
+  }
 
   Widget _loginButton(size) => Material(
       borderRadius: BorderRadius.circular(5),
@@ -29,11 +51,18 @@ class _MainLoginScreenState extends State<MainLoginScreen> {
           minWidth: size.width,
           padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
           color: Colors.purple,
-          onPressed: () {
-            if (!_formKey.currentState.validate()) {
-              //TODO:go to other screen
+          onPressed: () async{
+            if (_formKey.currentState.validate()) {
+              var log = await login();
+              if (log.data() != null){
+                print(log.data());
+                Navigator.of(_scaffoldKey.currentContext).pushReplacement(
+                  MaterialPageRoute(builder: (_)=>navigateChildHome(log))
+                );
+              }else{
+                showAlertDialog();
+              }
             }
-            print("this is tapped");
           },
           child: Text("Login",
               textAlign: TextAlign.center,
@@ -56,11 +85,16 @@ class _MainLoginScreenState extends State<MainLoginScreen> {
           }
           return null;
         },
-        onEditingComplete: () {
+        onEditingComplete: () async{
           if (_formKey.currentState.validate()) {
-            print("completed filling");
-            FocusScope.of(_scaffoldKey.currentContext).unfocus();
-            //TODO:go to other screen
+              var log = await login();
+              if (log.data() != null){
+                Navigator.of(_scaffoldKey.currentContext).push(
+                  MaterialPageRoute(builder: (_)=>navigateChildHome(log))
+                );
+              }else{
+                showAlertDialog();
+              }
           }
         },
         decoration: InputDecoration(
@@ -138,13 +172,16 @@ class _MainLoginScreenState extends State<MainLoginScreen> {
 
   Widget _bottomParentLoginLinker() {
     return Card(
-        elevation: 40,
-        shadowColor: Colors.white54,
-        color: Colors.white,
+        elevation: 10,
+        color: Colors.purple,
         margin: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
         child: Center(
           child: TextButton(
-            child: Text("Parent Login",style: TextStyle(fontWeight: FontWeight.w600,fontSize: 20),),
+            child: Text("Parent Login",
+                style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 25,
+                    color: Colors.white)),
             onPressed: () {
               Navigator.push(context,
                   MaterialPageRoute(builder: (context) => ParentLogin()));
@@ -153,6 +190,32 @@ class _MainLoginScreenState extends State<MainLoginScreen> {
         ));
   }
 
+    showAlertDialog() {
+      // set up the button
+      Widget okButton = FlatButton(
+        child: Text("OK"),
+        onPressed: () {
+          Navigator.of(context).pop();
+        },
+      );
+
+      // set up the AlertDialog
+      AlertDialog alert = AlertDialog(
+        title: Text("Sign In Error"),
+        content: Text("Failed to sign in, Check your code and Please try again."),
+        actions: [
+          okButton,
+        ],
+      );
+
+      // show the dialog
+      showDialog(
+        context: _scaffoldKey.currentContext,
+        builder: (BuildContext context) {
+          return alert;
+        },
+      );
+    }
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
@@ -176,7 +239,10 @@ class _MainLoginScreenState extends State<MainLoginScreen> {
                       children: [
                         Container(),
                         _centerView(size),
-                        _bottomParentLoginLinker(),
+                        Container(
+                          height: 70,
+                          child: _bottomParentLoginLinker(),
+                        )
                       ],
                     ))),
           ));

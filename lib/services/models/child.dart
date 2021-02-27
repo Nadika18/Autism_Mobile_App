@@ -2,13 +2,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easytalk/services/models/tasks.dart';
 
 class Child {
-  String uid;
   String name;
   String photourl;
   String regCode;
+  int age;
+  String gender;
   List<Task> tasks = List<Task>();
+  Child({this.name,this.photourl,this.regCode,this.age,this.gender});
 
-  Child(String uid) : this.uid = uid;
   Child.fromSnapshot(DocumentSnapshot snapshot) {
     _fromJson(snapshot.data());
   }
@@ -18,16 +19,24 @@ class Child {
   }
 
   _fromJson(Map<String, dynamic> json) {
-    uid = json["uid"];
     photourl = json["photourl"];
     name = json["name"];
     regCode = json["regCode"];
-    List<dynamic> _tasks = json["tasks"];
-    for (var task in _tasks) {
-      tasks.add(Task.fromJson(task));
-    }
+    gender = json["gender"];
+    age = json["age"];
+    print("Name:" +name);
+    print("regCode:"+ regCode);
   }
 
+  toJSON() {
+    return {
+    "photourl": photourl,
+    "name": name,
+    "regCode":regCode,
+    "gender":gender,
+    "age":age,
+    };
+  }
   int getNoOfTask() => tasks.length;
 
   void completedTask(DateTime dtime) {
@@ -51,4 +60,5 @@ class Child {
   void addTaskFromJson(Map<String, dynamic> json) {
     tasks.add(Task.fromJson(json));
   }
+
 }

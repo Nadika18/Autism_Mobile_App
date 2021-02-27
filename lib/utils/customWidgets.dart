@@ -24,6 +24,16 @@ Widget circularImageContainerNoAlign(String location, double size) {
               fit: BoxFit.cover, image: new AssetImage(location))));
 }
 
+Widget rectangularImageContainerNoAlign(String location, double size) {
+  double _size = size;
+  return Container(
+      width: _size,
+      height: _size,
+      decoration: new BoxDecoration(
+          image: new DecorationImage(
+              fit: BoxFit.cover, image: new AssetImage(location))));
+}
+
 Widget circularImageContainerLink(String location, double size) {
   double _size = size;
   return Center(

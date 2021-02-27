@@ -16,9 +16,7 @@ class ParentDataBaseService {
   Future<void> createUserDoc() async {
     var ref = _firestore.collection("parents").doc(user.uid);
     var exists = await parentDocumentExists(user.uid);
-    print("outside");
     if (!exists) {
-      print("inside");
       Map<String, dynamic> data = {
         "uid": user.uid,
         "email": user.email,
@@ -37,11 +35,6 @@ class ParentDataBaseService {
   Future<bool> checkDependentExists(String regCode) async {
     var ref = await _firestore.collection("children").doc(regCode).get();
     return ref.exists;
-  }
-
-  Future<void> printData(Future<DocumentSnapshot> snapshot) async {
-    var snap = await snapshot;
-    print(snap.data());
   }
 
   Future<void> addTask(Task task,String regCode) async {
@@ -64,8 +57,9 @@ class ParentDataBaseService {
 
 class ChildDataBaseService {
   String regCode;
+  String parentuid;
   ChildDataBaseService({@required this.regCode});
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  Future<List<Task>> getTaskData(String regCode){
+  Future<QuerySnapshot> getTaskData(String regCode){
   }
 }

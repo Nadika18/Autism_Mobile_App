@@ -1,73 +1,101 @@
-import 'package:easytalk/parent/forms.dart';
-import 'package:easytalk/services/models/tasks.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:easytalk/services/models/child.dart';
 import 'package:easytalk/utils/customWidgets.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ChildTaskView extends StatefulWidget {
-  final String uid;
-  ChildTaskView({@required this.uid});
   @override
   _TaskViewState createState() => _TaskViewState();
 }
 
 class _TaskViewState extends State<ChildTaskView> {
-  String uid;
-  @override
-  void initState() {
-    super.initState();
-    uid = widget.uid;
-  }
-
   @override
   Widget build(BuildContext context) {
-    Widget _buildTaskListItem(int index) {
-      return Card(margin:EdgeInsets.all(8),
-      child: ListTile(
-          leading: Text((index + 1).toString()),
-          title: Text(todoName[index], style: TextStyle( fontSize: 18)),
-          subtitle: Text(todoDesp[index]),
-          trailing: FlatButton(
-            child: Icon(Icons.delete),
-            onPressed: () {
-              setState(() {});
-            },
-          )));
-    }
-
-    Widget _buildTaskList() {
-      return Container(
-          padding: EdgeInsets.all(5),
-          child: Card(
-              elevation: 10,
-              child: Column(children: [
-                Expanded(
-                    child: ListView.builder(
-                  itemCount: todoName.length,
-                  itemBuilder: (context, index) {
-                    return _buildTaskListItem(index);
-                  },
-                )),
-              ])));
-    }
-
+    List months = [
+      'jan',
+      'feb',
+      'mar',
+      'apr',
+      'may',
+      'jun',
+      'jul',
+      'aug',
+      'sep',
+      'oct',
+      'nov',
+      'dec'
+    ];
+    var child = Provider.of<Child>(context, listen: false);
     return Scaffold(
-      appBar: AppBar(
-          backgroundColor: Colors.white,
-          leading: IconButton(
-              icon: Icon(Icons.keyboard_arrow_left_sharp,
-                  color: Colors.black, size: 45),
-              onPressed: () {
-                Navigator.of(context).pop();
-              }),
-          title: Text(
-            "Task View",
-            style: TextStyle(color: Colors.black),
-          )),
-      body: Container(
-        child: _buildTaskList(),
-      ),
-    );
+        appBar: AppBar(
+            backgroundColor: Colors.white,
+            leading: IconButton(
+                icon: Icon(Icons.keyboard_arrow_left_sharp,
+                    color: Colors.black, size: 45),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                }),
+            title: Text(
+              "Task View",
+              style: TextStyle(color: Colors.black),
+            )),
+        body: new StreamBuilder<QuerySnapshot>(
+            stream: FirebaseFirestore.instance
+                .collection('tasks')
+                .doc(child.parentuid)
+                .collection(child.regCode)
+                .orderBy("timestamp")
+                .snapshots(),
+            builder:
+                (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+              if (!snapshot.hasData) {
+                return Center(child: CircularProgressIndicator());
+              } else {
+                return new ListView(
+                  padding: EdgeInsets.all(5),
+                    itemExtent: 80,
+                    children: snapshot.data.docs.map((document) {
+                      var data = document.data();
+                      Timestamp tstamp = (document.data())["timestamp"];
+                      var dtime = tstamp.toDate();
+                      return new Card(
+                        elevation: 10,
+                        color: data["completed"]?Colors.purple[100]:Colors.white,
+                          child: ListTile(
+                        leading: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              rectangularImageContainerNoAlign(
+                                  data["photourl"] == null
+                                      ? "assets/defaulttask.png"
+                                      : data["photourl"],
+                                  40),
+                            ]),
+                        title: Text(data['name'].toString(),
+                            style: TextStyle(fontSize: 22)),
+                        subtitle: Text(data['description'].toString(),
+                            style: TextStyle(fontSize: 18)),
+                        trailing: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Text(
+                              months[dtime.month - 1] +
+                                  " - " +
+                                  dtime.weekday.toString(),
+                              style: TextStyle(fontSize: 20),
+                            ),
+                            Text(
+                              dtime.hour.toString() +
+                                  " : " +
+                                  dtime.minute.toString(),
+                              style: TextStyle(fontSize: 15),
+                            )
+                          ],
+                        ),
+                      ));
+                    }).toList());
+              }
+            }));
   }
 }
-
-

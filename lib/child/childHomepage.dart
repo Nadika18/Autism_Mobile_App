@@ -1,12 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easytalk/child/childTaskView.dart';
 import 'package:easytalk/child/feelings.dart';
 import 'package:easytalk/services/models/child.dart';
 import 'package:flutter/material.dart';
 import 'package:easytalk/utils/customWidgets.dart';
-import 'package:easytalk/parent/forms.dart';
 import 'package:easytalk/services/models/tasks.dart';
 import 'package:flutter_tts/flutter_tts.dart';
-import 'package:easytalk/child/image.dart';
 import 'package:provider/provider.dart';
 
 FlutterTts flutterTts = FlutterTts();
@@ -18,9 +17,6 @@ speak(String text) async {
   await flutterTts.speak(_text);
 }
 
-var taskName = "MAke your Bed";
-var taskDescription = "make it comfy to tuck yourself in";
-
 class ChildHomePage extends StatefulWidget {
   ChildHomePage({Key key, this.title}) : super(key: key);
   final String title;
@@ -30,53 +26,12 @@ class ChildHomePage extends StatefulWidget {
 
 class _ChildHomePageState extends State<ChildHomePage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  int remainingTasks;
-
-  @override
-  void initState() {
-    super.initState();
-    remainingTasks = todoName.length;
-  }
+  Task latestTask;
 
   @override
   Widget build(BuildContext context) {
-    var child = Provider.of<Child>(context, listen: false);
+    var child = Provider.of<Child>(context);
     Size size = MediaQuery.of(context).size;
-    Widget taskMaker(String taskName, String taskDescription, DateTime dtime) {
-      return Container(
-          child: Column(children: [
-        Text(taskName, style: TextStyle(fontSize: 120)),
-        Container(height: 40),
-        Text(dtime.hour.toString(),
-            style: TextStyle(fontSize: 120, fontWeight: FontWeight.bold)),
-        Container(height: 200),
-        Text(taskDescription, style: TextStyle(fontSize: 80))
-      ]));
-    }
-
-    Widget _buildTodoListItem(int index) {
-      return ListTile(
-          leading: Text((index + 1).toString()),
-          title: Text(todoName[index]),
-          subtitle: Text(todoDesp[index]),
-          trailing: FlatButton(
-            child: Icon(Icons.delete),
-            onPressed: () {
-              setState(() {
-                remainingTasks = todoName.length;
-              });
-            },
-          ));
-    }
-
-    Widget _buildTodoList() {
-      return ListView.builder(
-        itemCount: todoName.length,
-        itemBuilder: (context, index) {
-          return _buildTodoListItem(index);
-        },
-      );
-    }
 
     Widget _hearTodaysStatus() {
       return InkWell(
@@ -107,7 +62,11 @@ class _ChildHomePageState extends State<ChildHomePage> {
                         .headline6
                         .copyWith(color: Colors.white)),
                 onPressed: () {
-                  speak(taskName + taskDescription);
+                  if (latestTask == null) {
+                    speak("You are upto date");
+                  } else {
+                    speak(latestTask.name + latestTask.description);
+                  }
                 })
           ]),
         ),
@@ -118,7 +77,7 @@ class _ChildHomePageState extends State<ChildHomePage> {
       );
     }
 
-    Widget _remainingTasks() {
+    Widget _remainingTasks(int length) {
       return InkWell(
         child: Container(
           padding: const EdgeInsets.all(8.0),
@@ -136,7 +95,7 @@ class _ChildHomePageState extends State<ChildHomePage> {
           ),
           alignment: Alignment.center,
           child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-            Text(remainingTasks.toString(),
+            Text(length.toString(),
                 style: TextStyle(
                   fontSize: 30,
                   fontWeight: FontWeight.bold,
@@ -154,100 +113,150 @@ class _ChildHomePageState extends State<ChildHomePage> {
           ]),
         ),
         onTap: () {
-          Navigator.of(_scaffoldKey.currentContext).push(
-              MaterialPageRoute(builder: (_) => ChildTaskView(uid: 'nadss')));
+          Navigator.of(_scaffoldKey.currentContext)
+              .push(MaterialPageRoute(builder: (_) => ChildTaskView()));
         },
       );
     }
+    Query query = FirebaseFirestore.instance
+              .collection("tasks")
+              .doc(child.parentuid)
+              .collection(child.regCode)
+              .where("timestamp",isGreaterThan: Timestamp.now())
+              .orderBy("timestamp");
 
     Widget _currentTask(Size size) {
-      return Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(5)),
-          color: Colors.white,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.3),
-              spreadRadius: 5,
-              blurRadius: 7,
-              offset: Offset(0, 3),
-            ),
-          ],
-        ),
-        child: Stack(children: [
-          Container(
-              height: size.height * 2 / 6.5,
-              child: Stack(
-                children: [
-                  Positioned(
-                      top: 0,
-                      width: size.width * 0.55 - 3,
-                      child: ClipRRect(
-                          borderRadius:
-                              BorderRadius.only(topLeft: Radius.circular(5)),
-                          child: Image(image: AssetImage('assets/bed.jpg')))),
-                  Positioned(
-                      right: 0,
-                      width: size.width * 0.45 - 3,
-                      height: size.height * 1.8 / 6.5,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
+      return StreamBuilder<QuerySnapshot>(
+          stream: query.snapshots(),
+          builder: (BuildContext context,
+                  AsyncSnapshot<QuerySnapshot> snapshot){ 
+                    var task;
+                    if(snapshot.hasData){
+                    var querylatest = snapshot.data.docs.map((value)=>value.data());
+                    for (var item in querylatest) {
+                      if(item["completed"] == false){
+                        task = Task.fromJson(item);
+                        break;
+                      }
+                    }
+                    }else{
+                    task =null;
+                    }
+                    latestTask = task;
+              return Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(5)),
+                  color: Colors.white,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.3),
+                      spreadRadius: 5,
+                      blurRadius: 7,
+                      offset: Offset(0, 3),
+                    ),
+                  ],
+                ),
+                child: Stack(children: [
+                  Container(
+                      height: size.height * 2 / 6.5,
+                      child: Stack(
                         children: [
-                          Text(
-                            taskName,
-                            style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.bold),
-                            textAlign: TextAlign.center,
-                          ),
-                          Container(
-                              padding: const EdgeInsets.all(15),
-                              child: Text(
-                                taskDescription,
-                                textAlign: TextAlign.center,
-                              )),
+                          Positioned(
+                              top: 0,
+                              width: size.width * 0.55 - 3,
+                              child: ClipRRect(
+                                  borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(5)),
+                                  child: Image(
+                                      image: AssetImage('assets/bed.jpg')))),
+                          Positioned(
+                              right: 0,
+                              width: size.width * 0.45 - 3,
+                              height: size.height * 1.8 / 6.5,
+                              child: task != null
+                                  ? Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          task.name.toString(),
+                                          style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                        Container(
+                                            padding: const EdgeInsets.all(15),
+                                            child: Text(
+                                              task.description.toString(),
+                                              textAlign: TextAlign.center,
+                                            )),
+                                        Container(
+                                            padding: const EdgeInsets.all(15),
+                                            child: Text(
+                                              task.datetime.toString(),
+                                              textAlign: TextAlign.center,
+                                            )),
+                                      ],
+                                    )
+                                  : Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Text("All task completed",
+                                            style: TextStyle(fontSize: 20))
+                                      ],
+                                    )),
                         ],
                       )),
-                ],
-              )),
-          Positioned(
-              bottom: 0,
-              width: size.width - 6,
-              child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(5),
-                        bottomRight: Radius.circular(5)),
-                    color: Colors.white,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.3),
-                        spreadRadius: 7,
-                        blurRadius: 7,
-                        offset: Offset(0, -3),
-                      ),
-                    ],
-                  ),
-                  padding: const EdgeInsets.fromLTRB(0, 3, 0, 5),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      IconButton(
-                        icon: Icon(Icons.remove_circle_outline),
-                        onPressed: () {},
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.volume_up),
-                        onPressed: () {},
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.done_sharp),
-                        onPressed: () {},
-                      ),
-                    ],
-                  ))),
-        ]),
-      );
+                  Positioned(
+                      bottom: 0,
+                      width: size.width - 6,
+                      child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.only(
+                                bottomLeft: Radius.circular(5),
+                                bottomRight: Radius.circular(5)),
+                            color: Colors.white,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.3),
+                                spreadRadius: 7,
+                                blurRadius: 7,
+                                offset: Offset(0, -3),
+                              ),
+                            ],
+                          ),
+                          padding: const EdgeInsets.fromLTRB(0, 3, 0, 5),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              IconButton(
+                                icon: Icon(Icons.remove_circle_outline),
+                                onPressed: () {},
+                              ),
+                              IconButton(
+                                icon: Icon(Icons.volume_up),
+                                onPressed: () {
+                                  if(task!=null){
+                                    speak(task.name + " " + task.despcription);
+                                  }
+                                },
+                              ),
+                              IconButton(
+                                icon: Icon(Icons.done_sharp),
+                                onPressed: () {
+                                  if(task!=null){
+                                  task.toggleCompleted(child.parentuid,child.regCode);
+                                  }
+                                },
+                              ),
+                            ],
+                          ))),
+                ]),
+              );});
     }
 
     Widget _feelings() {
@@ -261,7 +270,9 @@ class _ChildHomePageState extends State<ChildHomePage> {
                   Navigator.of(_scaffoldKey.currentContext)
                       .push(MaterialPageRoute(builder: (_) => Feelings()));
                 }),
-                SizedBox(height: 20,),
+            SizedBox(
+              height: 20,
+            ),
             Text("How are you feeling?", style: TextStyle(fontSize: 20))
           ],
         ),
@@ -294,12 +305,25 @@ class _ChildHomePageState extends State<ChildHomePage> {
                   highlightColor: Colors.transparent,
                   onPressed: () {},
                 ),
-                circularImageContainer(child.photourl == null?"assets/defaultprofile.jpg":child.photourl, 55.0),
+                circularImageContainer(
+                    (child.photourl == null || child.photourl == "")
+                        ? "assets/defaultprofile.jpg"
+                        : child.photourl,
+                    55.0),
                 Container(
                   padding: const EdgeInsets.only(right: 8),
                   child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: [Text(child.name), Row(children: [Text(child.gender),Text("   "),Text(child.age.toString())],)]),
+                      children: [
+                        Text(child.name),
+                        Row(
+                          children: [
+                            Text(child.gender),
+                            Text("   "),
+                            Text(child.age.toString())
+                          ],
+                        )
+                      ]),
                 )
               ]));
     }
@@ -324,38 +348,53 @@ class _ChildHomePageState extends State<ChildHomePage> {
           ],
         )),
         body: SafeArea(
-          child: Stack(children: [
-            Column(mainAxisAlignment: MainAxisAlignment.start, children: [
-              ConstrainedBox(
-                constraints: BoxConstraints(
-                  minWidth: size.width,
-                  minHeight: 70,
-                  maxHeight: 70,
-                ),
-                child: _createTopView(),
-              ),
-              Container(
-                padding: const EdgeInsets.fromLTRB(3, 4, 3, 0),
-                height: (size.height - 70) / 6.5,
-                child: _hearTodaysStatus(),
-              ),
-              Container(
-                padding: const EdgeInsets.fromLTRB(3, 4, 3, 0),
-                height: (size.height - 70) / 6.5,
-                child: _remainingTasks(),
-              ),
-              Container(
-                padding: const EdgeInsets.fromLTRB(3, 4, 3, 0),
-                height: (size.height - 70) * 2.5 / 6.5,
-                child: _currentTask(size),
-              ),
-              Container(
-                height: (size.height - 70) * 1.5 / 6.5,
-                padding: const EdgeInsets.fromLTRB(3, 13, 3, 0),
-                child: _feelings(),
-              ),
-            ])
-          ]),
+          child: StreamBuilder(
+              stream: FirebaseFirestore.instance
+                  .collection("tasks")
+                  .doc(child.parentuid)
+                  .collection(child.regCode)
+                  .where("completed", isEqualTo: false)
+                  .snapshots(),
+              builder: (BuildContext context,
+                  AsyncSnapshot<QuerySnapshot> snapshot) {
+                    if(snapshot.data == null){
+                      return Center(child: CircularProgressIndicator(),);
+                    }
+                var left = snapshot.data.docs.where((value)=>(value.data())["timestamp"].toDate().isAfter(DateTime.now()));
+                print(left.length);
+                return Stack(children: [
+                  Column(mainAxisAlignment: MainAxisAlignment.start, children: [
+                    ConstrainedBox(
+                      constraints: BoxConstraints(
+                        minWidth: size.width,
+                        minHeight: 70,
+                        maxHeight: 70,
+                      ),
+                      child: _createTopView(),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.fromLTRB(3, 4, 3, 0),
+                      height: (size.height - 70) / 6.5,
+                      child: _hearTodaysStatus(),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.fromLTRB(3, 4, 3, 0),
+                      height: (size.height - 70) / 6.5,
+                      child: _remainingTasks(left.length),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.fromLTRB(3, 4, 3, 0),
+                      height: (size.height - 70) * 2.5 / 6.5,
+                      child: _currentTask(size),
+                    ),
+                    Container(
+                      height: (size.height - 70) * 1.5 / 6.5,
+                      padding: const EdgeInsets.fromLTRB(3, 13, 3, 0),
+                      child: _feelings(),
+                    ),
+                  ])
+                ]);
+              }),
         ));
   }
 }

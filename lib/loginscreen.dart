@@ -35,7 +35,15 @@ Widget navigateChildHome(value){
                 ChildDataBaseService(regCode: value.data()["regCode"]),
           )
         ],
-        child: ChildHomePage(),
+        child: MaterialApp(
+                  debugShowCheckedModeBanner: false,
+                  title: 'TODO app',
+                  theme: ThemeData(
+                    primarySwatch: Colors.purple,
+                    visualDensity: VisualDensity.adaptivePlatformDensity,
+                  ),
+          home:ChildHomePage()
+          ),
       );
 }
   Future login() {

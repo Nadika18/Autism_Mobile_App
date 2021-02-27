@@ -2,7 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 List<String> todoName = ["krishbin", "Make your Nadika"];
 List<String> todoDesp = ["fjkdj", "Be sure to be tucked in tightly"];
-List<DateTime> dateTime = [DateTime.parse("2020-12-01")];
+List<DateTime> dateTime = [
+  DateTime.parse("2020-12-01"),
+  DateTime.parse("2020-12-01")
+];
 List<bool> completed = [false];
 
 class Task {
@@ -13,16 +16,17 @@ class Task {
   DateTime datetime;
   String photourl;
   bool completed;
-  toJson(){
+  toJson() {
     var tstamp = Timestamp.fromDate(datetime);
     return {
-      "name":name,
-      "description":description,
+      "name": name,
+      "description": description,
       "timestamp": tstamp,
-      "photourl":photourl,
-      "completed":completed
+      "photourl": photourl,
+      "completed": completed
     };
   }
+
   Task.fromSnapshot(DocumentSnapshot snapshot) {
     _fromJson(snapshot.data());
   }
@@ -35,13 +39,18 @@ class Task {
     description = json["description"];
     name = json["name"];
     photourl = json["photourl"];
-    Timestamp timestamp = json["datetime"];
+    Timestamp timestamp = json["timestamp"];
     datetime = timestamp.toDate();
-    print(name);
     completed = json["completed"];
   }
 
-  void toogleCompleted() {
-    completed = !completed;
+  toggleCompleted(String id, String code) async{
+    var ref = FirebaseFirestore.instance
+        .collection("tasks")
+        .doc(id)
+        .collection(code)
+        .where("timestamp", isEqualTo: Timestamp.fromDate(datetime));
+        QuerySnapshot data = await ref.get();
+        data.docs.first.reference.update({"completed":true});
   }
 }

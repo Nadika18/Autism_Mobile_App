@@ -1,7 +1,6 @@
 import 'package:easytalk/services/firebase/authWidget.dart';
 import 'package:easytalk/services/firebase/authWidgetBuilder.dart';
 import 'package:easytalk/services/firebase/authservice.dart';
-import 'package:easytalk/services/firebase/databaseservice.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

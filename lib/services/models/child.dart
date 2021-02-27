@@ -3,6 +3,7 @@ import 'package:easytalk/services/models/tasks.dart';
 
 class Child {
   String name;
+  String parentuid;
   String photourl;
   String regCode;
   int age;
@@ -24,6 +25,7 @@ class Child {
     regCode = json["regCode"];
     gender = json["gender"];
     age = json["age"];
+    parentuid = json["parentuid"];
     print("Name:" +name);
     print("regCode:"+ regCode);
   }
@@ -42,8 +44,6 @@ class Child {
   void completedTask(DateTime dtime) {
     for (var task in tasks) {
       if (task.datetime == dtime) {
-        task.toogleCompleted();
-        //TODO: server side
       }
     }
   }
@@ -54,7 +54,6 @@ class Child {
 
   void addTask(Task task) {
     tasks.add(task);
-    //TODO: server side
   }
 
   void addTaskFromJson(Map<String, dynamic> json) {

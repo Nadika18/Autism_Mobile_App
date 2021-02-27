@@ -3,7 +3,6 @@ import 'package:easytalk/parent/dependents.dart';
 import 'package:easytalk/parent/questionsFromParents.dart';
 import 'package:easytalk/parent/rewards.dart';
 import 'package:easytalk/parent/taskview.dart';
-import 'package:easytalk/services/firebase/databaseservice.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
@@ -13,10 +12,7 @@ import 'package:easytalk/loginscreen.dart';
 import 'package:easytalk/child/childPecs.dart';
 import 'package:easytalk/utils/customWidgets.dart';
 import "package:easytalk/parent/manage_routine.dart";
-import 'package:easytalk/parent/questionsFromParents.dart';
 import 'package:easytalk/child/childHomepage.dart';
-import 'package:easytalk/child/image.dart';
-import 'package:easytalk/child/feelings.dart';
 
 class ParentHomePage extends StatefulWidget {
   ParentHomePage({Key key}) : super(key: key);

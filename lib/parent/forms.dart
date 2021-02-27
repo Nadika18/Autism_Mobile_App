@@ -271,7 +271,6 @@ class _DependentFormState extends State<DependentForm> {
   TextEditingController _genderController = TextEditingController();
   TextEditingController _ageController = TextEditingController();
   TextEditingController _regcodeController = TextEditingController();
-  TextEditingController _passcodeController = TextEditingController();
   String uid;
   final title = "Create a new dependent";
   void _confirmAddDialog() {
@@ -332,7 +331,6 @@ class _DependentFormState extends State<DependentForm> {
                     } else {
                       _scaffoldKey.currentState.showSnackBar(snackBarAllocated);
                     }
-                    ;
                     Navigator.of(_scaffoldKey.currentContext).pop();
                   },
                 )
@@ -342,7 +340,6 @@ class _DependentFormState extends State<DependentForm> {
         ));
   }
 
-  @override
   Widget _buildInputName() {
     return Container(
         child: Column(children: [
@@ -449,6 +446,7 @@ class _DependentFormState extends State<DependentForm> {
     );
   }
 
+  @override
   Widget build(BuildContext context) {
     var appBar = AppBar(
         backgroundColor: Colors.white,
